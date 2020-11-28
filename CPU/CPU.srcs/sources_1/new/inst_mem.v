@@ -26,9 +26,9 @@ module inst_mem(input wire clk,
                 input wire isOut,
                 output reg[`SIZE] instruction);
     reg[`SIZE] memory[`instMemSize];
-    always	@(negedge clk) fork
+    always	@(posedge clk) fork
         if (isOut == `true) begin
-            instruction <= memory[address[0 : `instMemSizeLog2 - 1]];
+            instruction <= memory[address[`instMemSizeLog2 - 1:0]];
         end
     join
 endmodule

@@ -21,13 +21,13 @@
 
 
 `include "config.vh"
-module pc(
+ module pc(
     input clk,
     input newPc,
     output pcOut
     );
     reg[`SIZE] pc;
-    always @(posedge clk) fork
+    always @(negedge clk) fork
         pc <= newPc;
     join
     assign pcOut = pc; 

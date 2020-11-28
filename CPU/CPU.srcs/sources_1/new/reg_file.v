@@ -23,7 +23,7 @@
 
 module reg_file(
     input clk,
-    input isOut1,isOut2,isIn,
+    input isIn,
     input[`regAddrSize] addrIn,
     input[`SIZE] dataIn,
     input[`regAddrSize] addrOut1,
@@ -33,16 +33,13 @@ module reg_file(
     );
     reg[`SIZE] file[`SIZE];
     always @(negedge clk) fork
-        if(isOut1 == `true)begin
-            dataOut1 <= file[addrOut1];
-        end
 
-        if(isOut2 == `true)begin
-            dataOut2 <= file[addrOut2];
-        end    
+            
     join
 
     always @(posedge clk) fork  
+        dataOut1 <= file[addrOut1];
+        dataOut2 <= file[addrOut2];
         if(isIn == `true)begin
             file[addrIn] <= dataIn;
         end   

@@ -33,13 +33,13 @@ module data_mem(
 
     always @(negedge clk) begin
         if(isOut == `true)begin
-            dataOut <= memory[addrOut[0 : `dataMemSizeLog2 - 1]];
+            dataOut <= memory[addrOut[`dataMemSizeLog2 - 1 : 0]];
         end
     end
     
     always @(posedge clk ) begin
         if(isIn == `true)begin
-            memory[addrIn[0 : `dataMemSizeLog2]] <= dataIn;
+            memory[addrIn[`dataMemSizeLog2 : 0]] <= dataIn;
         end
     end
 

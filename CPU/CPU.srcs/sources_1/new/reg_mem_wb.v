@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/11/27 20:21:45
+// Create Date: 2020/11/28 20:06:06
 // Design Name: 
-// Module Name: pc_alu
+// Module Name: reg_mem_wb
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,15 +19,8 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "config.vh"
-module pc_alu(
-    input clk,
-    input[`SIZE] pc,
-    output reg[`SIZE] newPc
+
+module reg_mem_wb(
+
     );
-
-    always @(posedge clk) fork
-        newPc <= pc + 4; 
-    join
-
 endmodule
