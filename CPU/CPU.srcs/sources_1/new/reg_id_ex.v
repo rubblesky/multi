@@ -10,6 +10,9 @@ module reg_id_ex(
     //output reg[`SIZE] pc,
     output reg[`SIZE] inst
 );
+
+reg[`regAddrSize] rdAddr;
+
 always @(posedge clk ) begin
     
 end
