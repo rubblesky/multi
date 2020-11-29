@@ -23,9 +23,9 @@
 
 `include "config.vh"
 module cu(input clk,
-          input [0:5] op,
-          output isJmp,
-          output reg[0:1] aluOp,
+          input [`instOpSize] op,
+          //output isJmp,
+          output reg[`aluOpSize] aluOp,
           output reg regFileIsIn);
     
     always @(posedge clk) begin

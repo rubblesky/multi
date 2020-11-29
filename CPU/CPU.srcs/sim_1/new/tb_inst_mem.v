@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-//`include "..\..\sources_1\new\config.vh"
+`include "..\..\sources_1\new\config.vh"
 //~ `New testbench
 `timescale  1ns / 1ps
 

@@ -32,10 +32,6 @@ module reg_file(
     
     );
     reg[`SIZE] file[`SIZE];
-    always @(negedge clk) fork
-
-            
-    join
 
     always @(posedge clk) fork  
         dataOut1 <= file[addrOut1];

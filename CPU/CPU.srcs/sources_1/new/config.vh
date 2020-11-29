@@ -20,7 +20,10 @@
 `define dataMemSizeLog2 10
 `define regAddrSize 4:0
 
-`define instOp 5:0
+`define instOpSize 5:0
+`define instFunctSize 4:0
+
+`define aluOpSize 1:0
 `define aluControlSize 3:0
 
 `endif

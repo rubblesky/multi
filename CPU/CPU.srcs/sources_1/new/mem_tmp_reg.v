@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/11/28 20:06:06
+// Create Date: 2020/11/29 21:15:13
 // Design Name: 
-// Module Name: reg_mem_wb
+// Module Name: mem_tmp_reg
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "config.vh"
-module reg_mem_wb(
+module mem_tmp_reg(
     input clk,
     input[`SIZE] instIn,
     input[`SIZE] calculationIn,
@@ -32,9 +32,10 @@ module reg_mem_wb(
 
     output reg regFileIsIn
     );
-    always @(negedge clk ) begin
-        inst <= instIn;
+    always @(posedge clk ) begin
         calculation <= calculationIn;
+        inst <= instIn;
         regFileIsIn <= regFileIsInIn;
     end
+
 endmodule

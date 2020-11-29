@@ -4,7 +4,7 @@ module reg_if_id(
     input[`SIZE] instIn,
     //input[`SIZE] pcIn,
     output reg[`SIZE] inst,
-    output reg[`SIZE] pc
+    //output reg[`SIZE] pc
 );
 always @(negedge clk ) begin
     inst <= instIn;
