@@ -52,7 +52,7 @@ CPU  u_CPU (
 
 initial
 begin
-
+    #100
     $finish;
 end
 

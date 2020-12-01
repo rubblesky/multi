@@ -29,6 +29,7 @@
     output[`SIZE] pcOut
     );
     reg[`SIZE] pc;
+    //initial pc <= 32'b0;
     always @(negedge clk) fork
         pc <= newPc;
     join

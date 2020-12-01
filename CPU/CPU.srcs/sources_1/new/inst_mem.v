@@ -27,11 +27,18 @@ module inst_mem(input wire clk,
                 input wire[`SIZE] address,
                 input wire isOut,
                 output reg[`SIZE] instruction);
-    reg[`SIZE] memory[`instMemSize];
+    reg[`SIZE] memory[`instMemSize];	
+    initial 
+    begin
+        
+    $readmemb ("E:/myfile/homework/ComputerArchitecture/CPU/CPU/CPU.srcs/sources_1/new/inst.data",memory);
+    //$display("---------------------------\nfetch : %b\n",memory[1]);
+    end
     always	@(posedge clk) fork
         if (isOut == `true) begin
             instruction <= memory[address[`instMemSizeLog2 - 1:0]];
         end
     join
+    always @(posedge clk) $display("---------------------------\nisOut : %b, address : %h, fetch : %b\n",isOut,address,instruction);
 endmodule
 `endif
