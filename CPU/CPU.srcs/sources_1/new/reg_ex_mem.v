@@ -1,4 +1,6 @@
 
+`ifndef REG_EX_MEM_V
+`define REG_EX_MEM_V
 `include "config.vh"
 
 module reg_ex_mem (
@@ -22,3 +24,4 @@ end
 
     
 endmodule
+`endif

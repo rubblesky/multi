@@ -1,3 +1,5 @@
+`ifndef PC_V
+`define PC_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -23,8 +25,8 @@
 `include "config.vh"
  module pc(
     input clk,
-    input newPc,
-    output pcOut
+    input[`SIZE] newPc,
+    output[`SIZE] pcOut
     );
     reg[`SIZE] pc;
     always @(negedge clk) fork
@@ -32,3 +34,4 @@
     join
     assign pcOut = pc; 
 endmodule
+`endif

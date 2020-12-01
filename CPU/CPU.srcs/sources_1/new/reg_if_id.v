@@ -1,3 +1,5 @@
+`ifndef REG_IF_ID_V
+`define REG_IF_ID_V
 `include "config.vh"
 module reg_if_id(
     input clk,
@@ -12,3 +14,5 @@ always @(negedge clk ) begin
 end
     
 endmodule
+
+`endif

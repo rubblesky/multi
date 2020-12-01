@@ -1,3 +1,5 @@
+`ifndef REG_MEM_WB_V
+`define REG_MEM_WB_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -38,3 +40,4 @@ module reg_mem_wb(
         regFileIsIn <= regFileIsInIn;
     end
 endmodule
+`endif

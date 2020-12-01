@@ -1,3 +1,5 @@
+`ifndef MEM_TMP_REG_V
+`define MEM_TMP_REG_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -39,3 +41,4 @@ module mem_tmp_reg(
     end
 
 endmodule
+`endif

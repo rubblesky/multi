@@ -1,5 +1,4 @@
-`ifnedf CPU_V
-`define CPU_V
+
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -63,8 +62,9 @@ reg_if_id cpu_reg_if_id(
 );
 
 //reg_file
-wire[`SIZE] reg_file_isIn,reg_file_addrIn,reg_file_dataIn;
-wire[`SIZE] reg_file_addrOut1,reg_file_addrOut2,reg_file_dataOut1,reg_file_dataOut2;
+wire  reg_file_isIn;
+wire[`regAddrSize] reg_file_addrIn,reg_file_addrOut1,reg_file_addrOut2;
+wire[`SIZE] reg_file_dataIn,reg_file_dataOut1,reg_file_dataOut2;
 reg_file cpu_reg_file(
     .clk(clk),
     .isIn(reg_file_isIn),
@@ -79,6 +79,7 @@ reg_file cpu_reg_file(
 );
 
 //cu
+wire[5:0] cu_op;
 wire[`aluOpSize] cu_aluOp;
 wire cu_regFileIsIN;
 cu cpu_cu(
@@ -99,7 +100,7 @@ id_tmp_reg cpu_id_tmp_reg(
 );
 
 //main_alu_control
-wire [`functPos] main_alu_control_funct;
+wire [5:0] main_alu_control_funct;
 wire [`aluControlSize] main_alu_control_cluControl; 
 main_alu_control cpu_main_alu_control(
     .clk(clk),
@@ -183,7 +184,7 @@ wire reg_mem_wb_regFileIsIn;
 reg_mem_wb cpu_reg_mem_wb(
     .clk(clk),
     .instIn(mem_tmp_reg_inst),
-    .calculation(mem_tmp_reg_calculation),
+    .calculationIn(mem_tmp_reg_calculation),
     .regFileIsInIn(mem_tmp_reg_regFileIsIn),
     
     .inst(reg_mem_wb_inst),
@@ -207,4 +208,3 @@ assign reg_file_dataIn = reg_mem_wb_calculation;
 assign main_alu_control_funct = id_tmp_reg_inst[5:0];
 endmodule
 
-`endif

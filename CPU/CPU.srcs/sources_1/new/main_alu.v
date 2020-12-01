@@ -1,3 +1,5 @@
+`ifndef MAIN_ALU_V
+`define MAIN_ALU_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -40,3 +42,4 @@ module main_alu(
 
 
 endmodule
+`endif

@@ -1,3 +1,6 @@
+`ifndef REG_FILE
+`define REG_FILE
+
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -42,3 +45,5 @@ module reg_file(
     join
 
 endmodule
+
+`endif

@@ -1,3 +1,5 @@
+`ifndef PC_ALU_V
+`define PC_ALU_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -31,3 +33,4 @@ module pc_alu(
     join
 
 endmodule
+`endif
