@@ -49,7 +49,9 @@ end
  wire[`SIZE] tb_newPc,tb_pcOut,tb_instruction;
  wire[`regAddrSize] tb_reg_file_addrOut1,tb_reg_file_addrOut2;
  wire [`SIZE] tb_reg_file_dataOut1,tb_reg_file_dataOut2;
-
+wire [`SIZE] tb_main_alu_dataOut;
+wire tb_reg_mem_wb_regFileIsIn;
+wire [`SIZE] tb_reg_mem_wb_calculation;
 CPU  u_CPU (
     .clk                     ( clk   ),
     .rst                     (rst),
@@ -60,7 +62,10 @@ CPU  u_CPU (
     .tb_reg_file_addrOut1                            (tb_reg_file_addrOut1   ),
     .tb_reg_file_addrOut2                     ( tb_reg_file_addrOut2                      ),
     .tb_reg_file_dataOut1                  (tb_reg_file_dataOut1       ),
-    .tb_reg_file_dataOut2                 ( tb_reg_file_dataOut2               )
+    .tb_reg_file_dataOut2                 ( tb_reg_file_dataOut2               ),
+    .tb_main_alu_dataOut(tb_main_alu_dataOut),
+    .tb_reg_mem_wb_regFileIsIn(tb_reg_mem_wb_regFileIsIn),
+    .tb_reg_mem_wb_calculation(tb_reg_mem_wb_calculation)
 );
 
 initial

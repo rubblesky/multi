@@ -27,7 +27,11 @@ module CPU(
 
     output wire[`SIZE] tb_newPc,tb_pcOut,tb_instruction,
     output wire[`regAddrSize] tb_reg_file_addrOut1,tb_reg_file_addrOut2,
-    output wire [`SIZE] tb_reg_file_dataOut1,tb_reg_file_dataOut2
+    output wire [`SIZE] tb_reg_file_dataOut1,tb_reg_file_dataOut2,
+    output wire [`SIZE] tb_main_alu_dataOut,
+    output wire [`SIZE] tb_reg_mem_wb_inst, 
+    output wire tb_reg_mem_wb_regFileIsIn,
+    wire [`SIZE] tb_reg_mem_wb_calculation
     );
 
 
@@ -226,5 +230,8 @@ assign main_alu_control_funct = id_tmp_reg_inst[5:0];
     assign tb_reg_file_addrOut2 = reg_file_addrOut2;
     assign tb_reg_file_dataOut1 = reg_file_dataOut1;
     assign tb_reg_file_dataOut2 = reg_file_dataOut2;
+    assign tb_main_alu_dataOut = main_alu_dataOut;
+    assign tb_reg_mem_wb_regFileIsIn = reg_mem_wb_regFileIsIn;
+    assign tb_reg_mem_wb_calculation = reg_ex_mem_calculation;
 endmodule
 
