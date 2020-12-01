@@ -1,3 +1,5 @@
+`ifndef ID_TMP_REG_V
+`define ID_TMP_REG_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -31,3 +33,4 @@ module id_tmp_reg(
         inst = instIn; 
     end
 endmodule
+`endif

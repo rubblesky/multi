@@ -1,3 +1,6 @@
+`ifndef DATA_MEM_V
+`define DATA_MEM_V
+
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -44,3 +47,4 @@ module data_mem(
     end
 
 endmodule
+`endif

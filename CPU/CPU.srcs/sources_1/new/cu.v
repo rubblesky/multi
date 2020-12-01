@@ -1,3 +1,5 @@
+`ifndef CU_V
+`define CU_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company:
@@ -87,3 +89,5 @@ module cu(input clk,
     
     
 endmodule
+
+`endif

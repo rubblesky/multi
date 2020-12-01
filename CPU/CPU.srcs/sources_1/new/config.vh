@@ -26,4 +26,11 @@
 `define aluOpSize 1:0
 `define aluControlSize 3:0
 
+`define opPos 31:26
+`define rsPos 25:21
+`define rtPos 20:16
+`define rdPos 15:11
+`define shamtPos 10:6
+`define functPos 5:0
+
 `endif

@@ -1,3 +1,5 @@
+`ifndef INST_MEM_V
+`define INST_MEM_V
 //`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company:
@@ -32,3 +34,4 @@ module inst_mem(input wire clk,
         end
     join
 endmodule
+`endif

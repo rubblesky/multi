@@ -1,3 +1,5 @@
+`ifndef EX_TMP_REG
+`define EX_TMP_REG
 
 `include "config.vh"
 module ex_tmp_reg (
@@ -17,3 +19,4 @@ module ex_tmp_reg (
     end
     
 endmodule
+`endif
