@@ -25,7 +25,7 @@
 `include "config.vh"
 
 module reg_file(
-    input clk,
+    input clk,rst,
     input isIn,
     input[`regAddrSize] addrIn,
     input[`SIZE] dataIn,
@@ -35,7 +35,16 @@ module reg_file(
     
     );
     reg[`SIZE] file[`SIZE];
-
+/*    reg[0:4] count;
+    always @(posedge clk ) begin
+        if(rst == `true)begin 
+            count = 0;
+            while(count < 32)begin
+                file[count] = 0;
+            end
+        end
+    end
+*/
     always @(posedge clk) fork  
         dataOut1 <= file[addrOut1];
         dataOut2 <= file[addrOut2];

@@ -22,13 +22,20 @@
 
 `include "CPU.vh"
 module CPU(
-    input clk
+    input clk,
+    input rst,
+
+    output wire[`SIZE] tb_newPc,tb_pcOut,tb_instruction,
+    output wire[`regAddrSize] tb_reg_file_addrOut1,tb_reg_file_addrOut2
     );
+
+
 //pc
 wire[`SIZE] newPc,pcOut;
 
 pc cpu_pc(
     .clk (clk),
+    .rst(rst),
     .newPc (newPc),
 
     .pcOut (pcOut)
@@ -43,6 +50,7 @@ pc_alu cpu_pc_alu(
 );
 
 //inst_mem
+
 wire[`SIZE] instruction;
 inst_mem cpu_inst_mem(
     .clk(clk),
@@ -67,6 +75,7 @@ wire[`regAddrSize] reg_file_addrIn,reg_file_addrOut1,reg_file_addrOut2;
 wire[`SIZE] reg_file_dataIn,reg_file_dataOut1,reg_file_dataOut2;
 reg_file cpu_reg_file(
     .clk(clk),
+    .rst(rst),
     .isIn(reg_file_isIn),
 
     .addrIn(reg_file_addrIn),
@@ -206,5 +215,13 @@ assign reg_file_dataIn = reg_mem_wb_calculation;
 
 //连接main_alu_control和id_tmp_reg
 assign main_alu_control_funct = id_tmp_reg_inst[5:0];
+
+
+//测试用
+    assign tb_newPc = newPc;
+    assign tb_pcOut = pcOut;
+    assign tb_instruction = instruction;
+    assign tb_reg_file_addrOut1 = reg_file_addrOut1;
+    assign tb_reg_file_addrOut2 = reg_file_addrOut2;
 endmodule
 

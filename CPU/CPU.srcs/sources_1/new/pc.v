@@ -24,14 +24,24 @@
 
 `include "config.vh"
  module pc(
-    input clk,
+    input clk,rst,
+    //input isIn,
     input[`SIZE] newPc,
     output[`SIZE] pcOut
     );
+
     reg[`SIZE] pc;
     //initial pc <= 32'b0;
+    always @(posedge clk ) begin
+        if(rst == `true)begin
+            pc = 32'h00000000;
+        end
+$display("---------------------------\n pc : %b\n",pc);
+    end
     always @(negedge clk) fork
-        pc <= newPc;
+        if(rst != `true)begin
+            pc <= newPc;            
+        end
     join
     assign pcOut = pc; 
 endmodule

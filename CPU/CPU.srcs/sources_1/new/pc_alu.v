@@ -29,7 +29,8 @@ module pc_alu(
     );
 
     always @(posedge clk) fork
-        newPc <= pc + 4; 
+        newPc <= pc + 1; 
+        //由于inst_mem的定义 这里加一
     join
 
 endmodule
