@@ -48,6 +48,7 @@ end
 
  wire[`SIZE] tb_newPc,tb_pcOut,tb_instruction;
  wire[`regAddrSize] tb_reg_file_addrOut1,tb_reg_file_addrOut2;
+ wire [`SIZE] tb_reg_file_dataOut1,tb_reg_file_dataOut2;
 
 CPU  u_CPU (
     .clk                     ( clk   ),
@@ -57,7 +58,9 @@ CPU  u_CPU (
     .tb_pcOut                                 ( tb_pcOut                                  ),
     .tb_instruction                           ( tb_instruction                            ),
     .tb_reg_file_addrOut1                            (tb_reg_file_addrOut1   ),
-    .tb_reg_file_addrOut2                     ( tb_reg_file_addrOut2                      )
+    .tb_reg_file_addrOut2                     ( tb_reg_file_addrOut2                      ),
+    .tb_reg_file_dataOut1                  (tb_reg_file_dataOut1       ),
+    .tb_reg_file_dataOut2                 ( tb_reg_file_dataOut2               )
 );
 
 initial

@@ -34,17 +34,19 @@ module reg_file(
     output reg[`SIZE] dataOut1,dataOut2
     
     );
-    reg[`SIZE] file[`SIZE];
-/*    reg[0:4] count;
-    always @(posedge clk ) begin
-        if(rst == `true)begin 
-            count = 0;
-            while(count < 32)begin
-                file[count] = 0;
-            end
-        end
-    end
-*/
+    reg[`SIZE] file [`SIZE];
+
+            integer i;
+
+initial
+begin
+    file[0] = 0;
+    for(i = 1;i <32 ;i=i+1)
+        file[i] = 1;  
+
+end
+
+
     always @(posedge clk) fork  
         dataOut1 <= file[addrOut1];
         dataOut2 <= file[addrOut2];

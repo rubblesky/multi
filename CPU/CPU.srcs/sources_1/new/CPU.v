@@ -26,7 +26,8 @@ module CPU(
     input rst,
 
     output wire[`SIZE] tb_newPc,tb_pcOut,tb_instruction,
-    output wire[`regAddrSize] tb_reg_file_addrOut1,tb_reg_file_addrOut2
+    output wire[`regAddrSize] tb_reg_file_addrOut1,tb_reg_file_addrOut2,
+    output wire [`SIZE] tb_reg_file_dataOut1,tb_reg_file_dataOut2
     );
 
 
@@ -110,7 +111,7 @@ id_tmp_reg cpu_id_tmp_reg(
 
 //main_alu_control
 wire [5:0] main_alu_control_funct;
-wire [`aluControlSize] main_alu_control_cluControl; 
+wire [`aluControlSize] main_alu_control_aluControl; 
 main_alu_control cpu_main_alu_control(
     .clk(clk),
     .aluOp(cu_aluOp),
@@ -223,5 +224,7 @@ assign main_alu_control_funct = id_tmp_reg_inst[5:0];
     assign tb_instruction = instruction;
     assign tb_reg_file_addrOut1 = reg_file_addrOut1;
     assign tb_reg_file_addrOut2 = reg_file_addrOut2;
+    assign tb_reg_file_dataOut1 = reg_file_dataOut1;
+    assign tb_reg_file_dataOut2 = reg_file_dataOut2;
 endmodule
 

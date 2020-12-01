@@ -21,7 +21,7 @@
 `define regAddrSize 4:0
 
 `define instOpSize 5:0
-`define instFunctSize 4:0
+`define instFunctSize 5:0
 
 `define aluOpSize 1:0
 `define aluControlSize 3:0
