@@ -32,5 +32,6 @@
 `define rdPos 15:11
 `define shamtPos 10:6
 `define functPos 5:0
+`define immediatePos 15:0
 
 `endif

@@ -26,18 +26,21 @@ module reg_mem_wb(
     input clk,
     input[`SIZE] instIn,
     input[`SIZE] calculationIn,
+    input[`SIZE] loadedDataIn,
 
-    input  regFileIsInIn,
+    input  muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn,
 
     output reg[`SIZE] inst,
     output reg[`SIZE] calculation,
+    output reg[`SIZE] loadedData,
 
-    output reg regFileIsIn
+    output reg muxWbDataControl,muxWbRegAddrControl,regFileIsIn
     );
     always @(negedge clk ) begin
         inst <= instIn;
         calculation <= calculationIn;
-        regFileIsIn <= regFileIsInIn;
+        {muxWbDataControl,muxWbRegAddrControl,regFileIsIn} <= 
+        {muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn};
     end
 endmodule
 `endif

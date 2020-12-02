@@ -5,17 +5,22 @@
 module ex_tmp_reg (
     input clk,
     input[`SIZE] instIn,
+    input[`SIZE] rtIn,
 
-    input  regFileIsInIn,
+    input dataMemIsInIn,dataMemIsOutIn,muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn,
 
     output reg[`SIZE] inst,
+    output reg[`SIZE] rt,
 
-    output reg regFileIsIn
+    output reg dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,regFileIsIn
 );
 
     always @(posedge clk) begin
         inst <= instIn;
-        regFileIsIn <= regFileIsInIn;
+        rt <= rtIn;
+        {dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,regFileIsIn} <= 
+        {dataMemIsInIn,dataMemIsOutIn,muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn};
+
     end
     
 endmodule

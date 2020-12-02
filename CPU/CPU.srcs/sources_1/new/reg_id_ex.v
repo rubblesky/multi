@@ -7,15 +7,18 @@ module reg_id_ex(
     input[`SIZE] rtIn,
     //input[`SIZE] pcIn,
     input[`SIZE] instIn,
+    input[`SIZE] extendImmediateIn,
 
-    input  regFileIsInIn,
+    
+    input  muxOperandControlIn,dataMemIsInIn,dataMemIsOutIn,muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn,
     
     output reg[`SIZE] rs,    
     output reg[`SIZE] rt,
     //output reg[`SIZE] pc,
     output reg[`SIZE] inst,
+    output reg[`SIZE] extendImmediate,
 
-    output reg regFileIsIn
+    output reg muxOperandControl,dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,regFileIsIn
 );
 
 reg[`regAddrSize] rdAddr;
@@ -28,8 +31,9 @@ always @(negedge clk ) begin
     rs <= rsIn;
     rt <= rtIn;
     inst <= instIn;
+    {extendImmediate,muxWbDataControl,dataMemIsIn,dataMemIsOut,muxWbRegAddrControl,regFileIsIn} <= 
+    {extendImmediateIn,muxWbDataControlIn,dataMemIsInIn,dataMemIsOutIn,muxWbRegAddrControlIn,regFileIsInIn};
 
-    regFileIsIn <= regFileIsInIn;
     //pc <= pcIn;
 end
     

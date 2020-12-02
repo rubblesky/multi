@@ -27,17 +27,18 @@ module mem_tmp_reg(
     input[`SIZE] instIn,
     input[`SIZE] calculationIn,
 
-    input  regFileIsInIn,
+    input  muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn,
 
     output reg[`SIZE] inst,
     output reg[`SIZE] calculation,
 
-    output reg regFileIsIn
+    output reg muxWbDataControl,muxWbRegAddrControl,regFileIsIn
     );
     always @(posedge clk ) begin
         calculation <= calculationIn;
         inst <= instIn;
-        regFileIsIn <= regFileIsInIn;
+        {muxWbDataControl,muxWbRegAddrControl,regFileIsIn} <= 
+        {muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn};
     end
 
 endmodule

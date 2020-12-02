@@ -7,14 +7,18 @@
 `include "reg_if_id.v"
 `include "reg_file.v"
 `include "cu.v"
+`include "sign_extend.v"
 `include "id_tmp_reg.v"
 `include "main_alu_control.v"
 `include "reg_id_ex.v"
+`include "mux_main_alu_operand.v"
 `include "main_alu.v"
 `include "ex_tmp_reg.v"
 `include "reg_ex_mem.v"
 `include "data_mem.v"
 `include "mem_tmp_reg.v"
 `include "reg_mem_wb.v"
+`include "mux_wb_data.v"
+`include "mux_wb_reg_addr.v"
 
 `endif

@@ -26,23 +26,26 @@
 module data_mem(
     input clk,
     input isIn,isOut,
-    input[`SIZE] addrIn,
+    input[`SIZE] addr,
     input[`SIZE] dataIn,
-    input[`SIZE] addrOut,
+    //input[`SIZE] addrOut,
     output reg[`SIZE] dataOut
     );
 
     reg[`SIZE] memory[`dataMemSize];
-
-    always @(negedge clk) begin
-        if(isOut == `true)begin
-            dataOut <= memory[addrOut[`dataMemSizeLog2 - 1 : 0]];
-        end
-    end
     
     always @(posedge clk ) begin
-        if(isIn == `true)begin
-            memory[addrIn[`dataMemSizeLog2 : 0]] <= dataIn;
+        if(isIn == `false && isOut == `false)begin
+            dataOut <= 32'hzzzz;
+        end
+        else if(isIn == `true)begin
+            memory[addr[`dataMemSizeLog2 : 0]] <= dataIn;
+        end
+        else if(isOut == `true)begin
+            dataOut <= memory[addr[`dataMemSizeLog2 - 1 : 0]];
+        end
+        else begin
+            dataOut <= 32'hzzzz;
         end
     end
 

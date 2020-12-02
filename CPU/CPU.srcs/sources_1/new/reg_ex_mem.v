@@ -6,20 +6,24 @@
 module reg_ex_mem (
     input clk,
     input[`SIZE] instIn,
+    input[`SIZE] rtIn,
     input[`SIZE] calculationIn, //ALU计算结果
 
-    input  regFileIsInIn,
+    input dataMemIsInIn,dataMemIsOutIn,muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn,
 
     output reg[`SIZE]inst,
+    output reg[`SIZE]rt,
     output reg[`SIZE]calculation,
 
-    output reg regFileIsIn
+    output reg dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,regFileIsIn
 );
 
 always @(negedge clk ) begin
     inst <= instIn;
+    rt <= rtIn;
     calculation <= calculationIn;
-    regFileIsIn <= regFileIsInIn;
+        {dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,regFileIsIn} <= 
+        {dataMemIsInIn,dataMemIsOutIn,muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn};
 end
 
     
