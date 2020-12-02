@@ -32,7 +32,7 @@ module cu(input clk,
           output reg regFileIsIn);
     
     always @(posedge clk) begin
-        aluOp <= 2'b10;
+        //aluOp <= 2'b10;
         case(op)
             6'b000000: //R型指令 mux控制 一律为1
             begin
