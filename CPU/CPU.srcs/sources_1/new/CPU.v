@@ -28,10 +28,15 @@ module CPU(
     output wire[`SIZE] tb_newPc,tb_pcOut,tb_instruction,
     output wire[`regAddrSize] tb_reg_file_addrOut1,tb_reg_file_addrOut2,
     output wire [`SIZE] tb_reg_file_dataOut1,tb_reg_file_dataOut2,
+    output wire [`aluOpSize] tb_cu_aluOp,
+    output wire[`SIZE] tb_mux_main_alu_operand_dataOut,
+    output wire[`aluControlSize] tb_main_alu_control_aluControl,
     output wire [`SIZE] tb_main_alu_dataOut,
     output wire [`SIZE] tb_reg_mem_wb_inst, 
     output wire tb_reg_mem_wb_regFileIsIn,
-    wire [`SIZE] tb_reg_mem_wb_calculation
+    output wire [`SIZE] tb_reg_mem_wb_calculation,
+    output wire [`regAddrSize]tb_mux_wb_reg_addr_dataOut,
+    output wire [`SIZE] tb_mux_wb_data_dataOut
     );
 
 
@@ -115,7 +120,7 @@ wire [`SIZE] sign_extend_extendedImmediate;
 sign_extend cpu_sign_extend(
     .clk(clk),
     .immediate(immediate),
-    .extendedImmediate(extendedImmediate)
+    .extendedImmediate(sign_extend_extendedImmediate)
 );
 
 
@@ -143,14 +148,16 @@ main_alu_control cpu_main_alu_control(
 //reg_id_ex
 wire[`SIZE] reg_id_ex_rs,reg_id_ex_rt;
 wire[`SIZE] reg_id_ex_inst;
+wire [`SIZE] reg_id_ex_extendImmediate;
 wire reg_id_ex_muxOperandControl,reg_id_ex_dataMemIsIn,reg_id_ex_dataMemIsOut,reg_id_ex_muxWbDataControl,reg_id_ex_muxWbRegAddrControl,reg_id_ex_regFileIsIn;
 reg_id_ex cpu_reg_id_ex(
     .clk(clk),
     .rsIn(reg_file_dataOut1),
     .rtIn(reg_file_dataOut2),
     .instIn(id_tmp_reg_inst),
+    .extendedImmediateIn(sign_extend_extendedImmediate),
     .muxOperandControlIn(cu_muxOperandControl),
-    .dataMemIsInIn(cu_dataMemIsOut),
+    .dataMemIsInIn(cu_dataMemIsIn),
     .dataMemIsOutIn(cu_dataMemIsOut),
     .muxWbDataControlIn(cu_muxWbDataControl),
     .muxWbRegAddrControlIn(cu_muxWbRegAddrControl),
@@ -159,8 +166,9 @@ reg_id_ex cpu_reg_id_ex(
     .rs(reg_id_ex_rs),
     .rt(reg_id_ex_rt),
     .inst(reg_id_ex_inst),
+    .extendedImmediate(reg_id_ex_extendImmediate),
     .muxOperandControl(reg_id_ex_muxOperandControl),
-    .dataMemIsIn(reg_id_ex_dataMemIsOut),
+    .dataMemIsIn(reg_id_ex_dataMemIsIn),
     .dataMemIsOut(reg_id_ex_dataMemIsOut),
     .muxWbDataControl(reg_id_ex_muxWbDataControl),
     .muxWbRegAddrControl(reg_id_ex_muxWbRegAddrControl),
@@ -171,7 +179,7 @@ reg_id_ex cpu_reg_id_ex(
 wire [`SIZE] mux_main_alu_operand_dataOut;
 mux_main_alu_operand cpu_mux_main_alu_operand(
     .control(reg_id_ex_muxOperandControl),
-    .dataIn0(sign_extend_extendedImmediate),
+    .dataIn0(reg_id_ex_extendImmediate),
     .dataIn1(reg_id_ex_rt),
     .dataOut(mux_main_alu_operand_dataOut)
     
@@ -205,7 +213,7 @@ ex_tmp_reg cpu_ex_tmp_reg(
     .inst(ex_tmp_reg_inst),
     .rt(ex_tmp_reg_rt),
     .dataMemIsIn(ex_tmp_reg_dataMemIsIn),
-    .dataMemIsOut(ex_tmp_reg_muxWbDataControl),
+    .dataMemIsOut(ex_tmp_reg_dataMemIsOut),
     .muxWbDataControl(ex_tmp_reg_muxWbDataControl),
     .muxWbRegAddrControl(ex_tmp_reg_muxWbRegAddrControl),
     .regFileIsIn(ex_tmp_reg_regFileIsIn)
@@ -346,8 +354,13 @@ assign reg_file_addrIn = mux_wb_reg_addr_dataOut;
     assign tb_reg_file_addrOut2 = reg_file_addrOut2;
     assign tb_reg_file_dataOut1 = reg_file_dataOut1;
     assign tb_reg_file_dataOut2 = reg_file_dataOut2;
+    assign tb_cu_aluOp = cu_aluOp;
+    assign tb_mux_main_alu_operand_dataOut = mux_main_alu_operand_dataOut;
+    assign tb_main_alu_control_aluControl = main_alu_control_aluControl;
     assign tb_main_alu_dataOut = main_alu_dataOut;
     assign tb_reg_mem_wb_regFileIsIn = reg_mem_wb_regFileIsIn;
     assign tb_reg_mem_wb_calculation = reg_ex_mem_calculation;
+    assign tb_mux_wb_reg_addr_dataOut = mux_wb_reg_addr_dataOut;
+    assign tb_mux_wb_data_dataOut = mux_wb_data_dataOut;
 endmodule
 

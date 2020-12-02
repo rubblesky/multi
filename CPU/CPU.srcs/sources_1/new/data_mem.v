@@ -33,7 +33,10 @@ module data_mem(
     );
 
     reg[`SIZE] memory[`dataMemSize];
-    
+    initial 
+    begin    
+    $readmemh ("E:/myfile/homework/ComputerArchitecture/CPU/CPU/CPU.srcs/sources_1/new/data.data",memory);
+    end
     always @(posedge clk ) begin
         if(isIn == `false && isOut == `false)begin
             dataOut <= 32'hzzzz;

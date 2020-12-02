@@ -27,20 +27,23 @@ module main_alu_control(input clk,
                         input[`instFunctSize] funct,
                         output reg[`aluControlSize] aluControl);
     
-    always @(posedge clk) begin
+    always @(negedge clk) begin
         case (aluOp)
             2'b10:
             begin
                 case (funct)
-                    6'b100000: aluControl = 4'b0010;
-                    6'b100010: aluControl = 4'b0110;
-                    6'b100100: aluControl = 4'b0000;
-                    6'b100101: aluControl = 4'b0001;
-                    6'b101010: aluControl = 4'b0111;
+                    6'b100000: aluControl <= 4'b0010;
+                    6'b100010: aluControl <= 4'b0110;
+                    6'b100100: aluControl <= 4'b0000;
+                    6'b100101: aluControl <= 4'b0001;
+                    6'b101010: aluControl <= 4'b0111;
                     //或非
                 endcase
             end
-            //其他aluop
+            2'b00:
+            begin
+                aluControl <= 4'b0010;
+            end
         endcase
     end
     

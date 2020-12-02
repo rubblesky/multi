@@ -30,10 +30,10 @@ module sign_extend(
 
     always @(posedge clk ) begin
         if(immediate[15] == 1'b0)begin
-            extendedImmediate <= {16'hffff,immediate};             
+            extendedImmediate <= {16'h0000,immediate};             
         end
         else begin
-            extendedImmediate <= {16'h0000,immediate};  
+            extendedImmediate <= {16'hffff,immediate};  
         end
 
     end
