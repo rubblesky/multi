@@ -25,12 +25,15 @@
 module id_tmp_reg(
     input clk,
     input[`SIZE] instIn,
-    //input[`SIZE] pc;
-    output reg[`SIZE] inst
+    input[`SIZE] pcIn,
+    
+    output reg[`SIZE] inst,
+    output reg[`SIZE] pc
     );
 
     always @(posedge clk ) begin
         inst = instIn; 
+        pc <= pcIn;
     end
 endmodule
 `endif

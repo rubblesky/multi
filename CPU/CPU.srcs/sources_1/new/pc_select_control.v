@@ -1,13 +1,13 @@
-`ifndef PC_ALU_V
-`define PC_ALU_V
+`ifndef PC_SELECT_CONTROL_V
+`define PC_SELECT_CONTROL_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/11/27 20:21:45
+// Create Date: 2020/12/03 20:50:18
 // Design Name: 
-// Module Name: pc_alu
+// Module Name: pc_select_control
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -22,16 +22,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "config.vh"
-module pc_alu(
-    input clk,
-    input[`SIZE] pc,
-    output reg[`SIZE] nextPc
+module pc_select_control(
+
+    input[`jmpOpSize] jmpOp,
+    input[`SIZE] calculation,
+    output muxPcControl
     );
 
-    always @(posedge clk) fork
-        nextPc <= pc + 1; 
-        //由于inst_mem的定义 这里加一
-    join
-
+    assign muxPcControl = (jmpOp == 2'b11 || 
+    (jmpOp == 2'b10 && calculation == 0)  ||
+    (jmpOp == 2'b01 && calculation != 0) ) ? 1'b1:1'b0; 
+    
 endmodule
+
 `endif

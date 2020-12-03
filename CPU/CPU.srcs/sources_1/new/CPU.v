@@ -60,12 +60,14 @@ pc cpu_pc(
 );
 
 //pc_alu
+wire[`SIZE] pc_alu_nextPc;
 pc_alu cpu_pc_alu(
     .clk(clk),
     .pc(pcOut),
 
-    .newPc(newPc)
+    .nextPc(pc_alu_nextPc)
 );
+
 
 //inst_mem
 
@@ -79,12 +81,14 @@ inst_mem cpu_inst_mem(
 );
 
 //reg_if_id
-wire[`SIZE] reg_if_id_inst;
+wire[`SIZE] reg_if_id_inst,reg_if_id_pc;
 reg_if_id cpu_reg_if_id(
     .clk(clk),
     .instIn(instruction),
+    .pcIn(pc_alu_nextPc),
 
-    .inst(reg_if_id_inst)
+    .inst(reg_if_id_inst),
+    .pc(reg_if_id_pc)
 );
 
 //reg_file
@@ -109,6 +113,7 @@ reg_file cpu_reg_file(
 wire[5:0] cu_op;
 wire[`aluOpSize] cu_aluOp;
 wire cu_regFileIsIn,cu_muxOperandControl,cu_dataMemIsIn,cu_dataMemIsOut,cu_muxWbDataControl,cu_muxWbRegAddrControl;
+wire[`jmpOpSize] cu_jmpOp;
 cu cpu_cu(
     .clk(clk),
     .op(cu_op),
@@ -119,7 +124,8 @@ cu cpu_cu(
     .dataMemIsOut(cu_dataMemIsOut),
     .muxWbDataControl(cu_muxWbDataControl),
     .muxWbRegAddrControl(cu_muxWbRegAddrControl),
-    .regFileIsIn(cu_regFileIsIn)
+    .regFileIsIn(cu_regFileIsIn),
+    .jmpOp(cu_jmpOp)
 );
 always @(posedge clk ) begin
     $display(" CU pos cu_op : %b \n",cu_op);
@@ -138,12 +144,15 @@ sign_extend cpu_sign_extend(
 
 
 //id_tmp_reg
-wire [`SIZE] id_tmp_reg_inst;
+wire [`SIZE] id_tmp_reg_inst,id_tmp_reg_pc;
 id_tmp_reg cpu_id_tmp_reg(
     .clk(clk),
     .instIn(reg_if_id_inst),
+    .pcIn(reg_if_id_pc),
 
-    .inst(id_tmp_reg_inst)
+    .inst(id_tmp_reg_inst),
+    .pc(id_tmp_reg_pc)
+
 );
 
 
@@ -160,14 +169,16 @@ main_alu_control cpu_main_alu_control(
 
 //reg_id_ex
 wire[`SIZE] reg_id_ex_rs,reg_id_ex_rt;
-wire[`SIZE] reg_id_ex_inst;
+wire[`SIZE] reg_id_ex_inst,reg_id_ex_pc;
 wire [`SIZE] reg_id_ex_extendImmediate;
 wire reg_id_ex_muxOperandControl,reg_id_ex_dataMemIsIn,reg_id_ex_dataMemIsOut,reg_id_ex_muxWbDataControl,reg_id_ex_muxWbRegAddrControl,reg_id_ex_regFileIsIn;
+wire [`jmpOpSize] reg_id_ex_jmpOp;
 reg_id_ex cpu_reg_id_ex(
     .clk(clk),
     .rsIn(reg_file_dataOut1),
     .rtIn(reg_file_dataOut2),
     .instIn(id_tmp_reg_inst),
+    .pcIn(id_tmp_reg_pc),
     .extendedImmediateIn(sign_extend_extendedImmediate),
     .muxOperandControlIn(cu_muxOperandControl),
     .dataMemIsInIn(cu_dataMemIsIn),
@@ -175,17 +186,21 @@ reg_id_ex cpu_reg_id_ex(
     .muxWbDataControlIn(cu_muxWbDataControl),
     .muxWbRegAddrControlIn(cu_muxWbRegAddrControl),
     .regFileIsInIn(cu_regFileIsIn),
+    .jmpOpIn(cu_jmpOp),
+
 
     .rs(reg_id_ex_rs),
     .rt(reg_id_ex_rt),
     .inst(reg_id_ex_inst),
+    .pc(reg_id_ex_pc),
     .extendedImmediate(reg_id_ex_extendImmediate),
     .muxOperandControl(reg_id_ex_muxOperandControl),
     .dataMemIsIn(reg_id_ex_dataMemIsIn),
     .dataMemIsOut(reg_id_ex_dataMemIsOut),
     .muxWbDataControl(reg_id_ex_muxWbDataControl),
     .muxWbRegAddrControl(reg_id_ex_muxWbRegAddrControl),
-    .regFileIsIn(reg_id_ex_regFileIsIn)
+    .regFileIsIn(reg_id_ex_regFileIsIn),
+    .jmpOp(reg_id_ex_jmpOp)
 );
 
 always @(posedge clk ) begin
@@ -215,9 +230,20 @@ main_alu cpu_main_alu(
     .dataOut(main_alu_dataOut)
 );
 
+//jmp_alu
+wire[`SIZE] jmp_alu_jmpPc;
+jmp_alu cpu_jmp_alu(
+    .clk(clk),
+    .pc(reg_id_ex_pc),
+    .addr(reg_id_ex_extendImmediate),
+    .jmpPc(jmp_alu_jmpPc)
+);
+
+
 //ex_tmp_reg
 wire [`SIZE] ex_tmp_reg_inst,ex_tmp_reg_rt;
 wire ex_tmp_reg_dataMemIsIn,ex_tmp_reg_dataMemIsOut,ex_tmp_reg_muxWbDataControl,ex_tmp_reg_muxWbRegAddrControl,ex_tmp_reg_regFileIsIn;
+wire [`jmpOpSize] ex_tmp_reg_jmpOp;
 ex_tmp_reg cpu_ex_tmp_reg(
     .clk(clk),
     .instIn(reg_id_ex_inst),
@@ -227,6 +253,7 @@ ex_tmp_reg cpu_ex_tmp_reg(
     .muxWbDataControlIn(reg_id_ex_muxWbDataControl),
     .muxWbRegAddrControlIn(reg_id_ex_muxWbRegAddrControl),    
     .regFileIsInIn(reg_id_ex_regFileIsIn),
+    .jmpOpIn(reg_id_ex_jmpOp),
 
     .inst(ex_tmp_reg_inst),
     .rt(ex_tmp_reg_rt),
@@ -234,12 +261,28 @@ ex_tmp_reg cpu_ex_tmp_reg(
     .dataMemIsOut(ex_tmp_reg_dataMemIsOut),
     .muxWbDataControl(ex_tmp_reg_muxWbDataControl),
     .muxWbRegAddrControl(ex_tmp_reg_muxWbRegAddrControl),
-    .regFileIsIn(ex_tmp_reg_regFileIsIn)
-
+    .regFileIsIn(ex_tmp_reg_regFileIsIn),
+    .jmpOp(ex_tmp_reg_jmpOp)
 );
 always @(negedge clk ) begin
     $display(" EX_TMP_Reg pos ex_tmp_reg_muxWbRegAddrControl : %b \n",ex_tmp_reg_muxWbRegAddrControl);
 end
+
+//pc_select_control
+wire pc_select_control_muxPcControl;
+pc_select_control cpu_pc_select_control(
+    .jmpOp(ex_tmp_reg_jmpOp),
+    .calculation(main_alu_dataOut),
+    .muxPcControl(pc_select_control_muxPcControl)
+);
+
+//mux_pc
+mux_pc cpu_mux_pc(
+    .control(pc_select_control_muxPcControl),
+    .jmpPc(jmp_alu_jmpPc),
+    .nextPc(pc_alu_nextPc),
+    .newPc(newPc)
+);
 
 //reg_ex_mem
 wire [`SIZE] reg_ex_mem_inst,reg_ex_mem_rt,reg_ex_mem_calculation;

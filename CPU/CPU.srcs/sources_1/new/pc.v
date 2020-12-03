@@ -25,22 +25,27 @@
 `include "config.vh"
  module pc(
     input clk,rst,
-    //input isIn,
+    input isIn,
     input[`SIZE] newPc,
     output[`SIZE] pcOut
     );
 
     reg[`SIZE] pc;
-    //initial pc <= 32'b0;
+    reg isPause;
     always @(posedge clk ) begin
         if(rst == `true)begin
-            pc = 32'h00000000;
+            pc <= 32'h00000000;
+            isPause <= `false;
         end
 $display("---------------------------\n pc : %b\n",pc);
     end
+
     always @(negedge clk) fork
-        if(rst != `true)begin
+        if(rst != `true && isIn == `true)begin
             pc <= newPc;            
+        end
+        else if(isIn == `false)begin
+            isPause <= `true;
         end
     join
     assign pcOut = pc; 

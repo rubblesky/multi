@@ -24,62 +24,115 @@
 
 
 `include "config.vh"
-module cu(input clk,
+module cu(input clk,rst,
           input [`instOpSize] op,
-          //output isJmp,
+          input isPause,
+
           output reg[`aluOpSize] aluOp,
           output reg muxOperandControl,dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,
-          output reg regFileIsIn);
-    
+          output reg regFileIsIn,pcIsIn,
+          output reg[`jmpOpSize] jmpOp
+          );
+
+    initial begin
+        pcIsIn <= `true;
+    end
+
+
+
     always @(posedge clk) begin
         //aluOp <= 2'b10;
-        case(op)
-            6'b000000: //R型指令 mux控制 一律为1
-            begin
-                regFileIsIn <= `true;
-                aluOp       <= 2'b10;
-                muxOperandControl <= 1'b1;
-                dataMemIsIn <= `false;
-                dataMemIsOut <= `false;
-                muxWbDataControl <= 1'b1;
-                muxWbRegAddrControl <= 1'b1;
-            end
-            
-            6'b100011: //lw 
-            begin
-                regFileIsIn <= `true;
-                aluOp <= 2'b00;
-                muxOperandControl <= 1'b0;
-                dataMemIsIn <= `false;
-                dataMemIsOut <= `true;
-                muxWbDataControl <= 1'b0;
-                muxWbRegAddrControl <= 1'b0;
-            end
-            6'b101011: //sw
-            begin
-                regFileIsIn <= `false;
-                aluOp <= 2'b00;
-                muxOperandControl <= 1'b0;
-                dataMemIsIn <= `true;
-                dataMemIsOut <= `false;
-                muxWbDataControl <= 1'bx;
-                muxWbRegAddrControl <= 1'bx;               
-            end
-            6'b001000: //addi
-            begin
-                regFileIsIn <= `true;
-                aluOp <= 2'b00;     //姑且这样 没有查资料
-                muxOperandControl <= 1'b0;
-                dataMemIsIn <= `false;
-                dataMemIsOut <= `false;
-                muxWbDataControl <= 1'b1;
-                muxWbRegAddrControl <= 1'b0;               
-            end
-            /*
-             6'b000100: //beq
-             6'b000010: //jmp
-             */
-        endcase
+        if(isPause) begin
+
+        end
+        else if(rst == `true)begin
+        pcIsIn <= `true;      
+        end
+        else    fork
+            case(op)
+                6'b000000: //R型指令 mux控制 一律为1
+                begin
+                    pcIsIn <= `true;
+                    regFileIsIn <= `true;
+                    aluOp       <= 2'b10;
+                    muxOperandControl <= 1'b1;
+                    dataMemIsIn <= `false;
+                    dataMemIsOut <= `false;
+                    muxWbDataControl <= 1'b1;
+                    muxWbRegAddrControl <= 1'b1;
+                    jmpOp <= 2'b00;
+                end
+                
+                6'b100011: //lw 
+                begin
+                    pcIsIn <= `true;
+                    regFileIsIn <= `true;
+                    aluOp <= 2'b00;
+                    muxOperandControl <= 1'b0;
+                    dataMemIsIn <= `false;
+                    dataMemIsOut <= `true;
+                    muxWbDataControl <= 1'b0;
+                    muxWbRegAddrControl <= 1'b0;
+                    jmpOp <= 2'b00;
+                end
+                6'b101011: //sw
+                begin
+                    pcIsIn <= `true;
+                    regFileIsIn <= `false;
+                    aluOp <= 2'b00;
+                    muxOperandControl <= 1'b0;
+                    dataMemIsIn <= `true;
+                    dataMemIsOut <= `false;
+                    muxWbDataControl <= 1'bx;
+                    muxWbRegAddrControl <= 1'bx;     
+                    jmpOp <= 2'b00;          
+                end
+                6'b001000: //addi
+                begin
+                    pcIsIn <= `true;
+                    regFileIsIn <= `true;
+                    aluOp <= 2'b00;     //姑且这样 没有查资料
+                    muxOperandControl <= 1'b0;
+                    dataMemIsIn <= `false;
+                    dataMemIsOut <= `false;
+                    muxWbDataControl <= 1'b1;
+                    muxWbRegAddrControl <= 1'b0;    
+                    jmpOp <= 2'b00;           
+                end
+                
+                6'b000100: //beq
+                begin
+
+                    pcIsIn <= `false;
+                    regFileIsIn <= `false;
+                    aluOp <= 2'b01;
+                    muxOperandControl <= 1'b0;
+                    dataMemIsIn <= `false;
+                    dataMemIsOut <= `false;
+                    muxWbDataControl <= 1'bx;
+                    muxWbRegAddrControl <= 1'bx;   
+                    jmpOp <= 2'b10;             
+                end
+                6'b000101: //beq
+                begin
+
+                    pcIsIn <= `false;
+                    regFileIsIn <= `false;
+                    aluOp <= 2'b01;
+                    muxOperandControl <= 1'b0;
+                    dataMemIsIn <= `false;
+                    dataMemIsOut <= `false;
+                    muxWbDataControl <= 1'bx;
+                    muxWbRegAddrControl <= 1'bx;   
+                    jmpOp <= 2'b01;             
+                end
+
+                /*
+                6'b000010: //jmp
+                */
+            endcase
+
+        join
     end
     
 

@@ -8,11 +8,13 @@ module ex_tmp_reg (
     input[`SIZE] rtIn,
 
     input dataMemIsInIn,dataMemIsOutIn,muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn,
+    input[`jmpOpSize] jmpOpIn,
 
     output reg[`SIZE] inst,
     output reg[`SIZE] rt,
 
-    output reg dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,regFileIsIn
+    output reg dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,regFileIsIn,
+    output reg[`jmpOpSize] jmpOp
 );
 
     always @(posedge clk) begin
@@ -20,7 +22,7 @@ module ex_tmp_reg (
         rt <= rtIn;
         {dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,regFileIsIn} <= 
         {dataMemIsInIn,dataMemIsOutIn,muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn};
-
+        jmpOp <= jmpOpIn;
     end
     
 endmodule

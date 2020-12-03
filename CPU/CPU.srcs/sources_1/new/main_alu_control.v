@@ -44,6 +44,10 @@ module main_alu_control(input clk,
             begin
                 aluControl <= 4'b0010;
             end
+            2'b01:
+            begin
+                aluControl <= 4'b0110;
+            end           
         endcase
     end
     

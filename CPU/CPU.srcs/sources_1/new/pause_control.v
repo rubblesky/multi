@@ -1,13 +1,13 @@
-`ifndef PC_ALU_V
-`define PC_ALU_V
+`ifndef PAUSE_CONTROL_V
+`define PAUSE_CONTROL_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/11/27 20:21:45
+// Create Date: 2020/12/03 20:41:08
 // Design Name: 
-// Module Name: pc_alu
+// Module Name: pause_control
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -22,16 +22,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "config.vh"
-module pc_alu(
+module pause_control(
     input clk,
-    input[`SIZE] pc,
-    output reg[`SIZE] nextPc
+    input isPauseIn,
+    output reg isPause
     );
-
-    always @(posedge clk) fork
-        nextPc <= pc + 1; 
-        //由于inst_mem的定义 这里加一
-    join
-
+    always @(posedge clk ) begin
+        isPause <= isPauseIn;
+    end
 endmodule
+
 `endif

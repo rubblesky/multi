@@ -1,13 +1,13 @@
-`ifndef PC_ALU_V
-`define PC_ALU_V
+`ifndef JMP_ALU_V
+`define JMP_ALU_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/11/27 20:21:45
+// Create Date: 2020/12/03 19:20:03
 // Design Name: 
-// Module Name: pc_alu
+// Module Name: jmp_alu
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -22,16 +22,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "config.vh"
-module pc_alu(
+module jmp_alu(
     input clk,
     input[`SIZE] pc,
-    output reg[`SIZE] nextPc
+    input[`SIZE] addr,
+    output reg[`SIZE] jmpPc 
     );
-
-    always @(posedge clk) fork
-        nextPc <= pc + 1; 
-        //由于inst_mem的定义 这里加一
-    join
+    always @(posedge clk ) begin
+        jmpPc <= pc + addr;
+    end
 
 endmodule
+
 `endif

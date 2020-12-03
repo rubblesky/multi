@@ -1,13 +1,13 @@
-`ifndef PC_ALU_V
-`define PC_ALU_V
+`ifndef MUX_PC_V
+`define MUX_PC_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/11/27 20:21:45
+// Create Date: 2020/12/03 19:36:09
 // Design Name: 
-// Module Name: pc_alu
+// Module Name: mux_pc
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -22,16 +22,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "config.vh"
-module pc_alu(
-    input clk,
-    input[`SIZE] pc,
-    output reg[`SIZE] nextPc
+module mux_pc(
+    input control,
+    input [`SIZE] jmpPc,
+    input [`SIZE] nextPc,
+    output [`SIZE] newPc
     );
 
-    always @(posedge clk) fork
-        nextPc <= pc + 1; 
-        //由于inst_mem的定义 这里加一
-    join
-
+    assign newPc = (control)?jmpPc:nextPc;
 endmodule
+
 `endif
