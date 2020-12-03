@@ -2,7 +2,7 @@
 `define REG_ID_EX_V
 `include "config.vh"
 module reg_id_ex(
-    input clk,
+    input clk,rst,
     input[`SIZE] rsIn,
     input[`SIZE] rtIn,
     input[`SIZE] pcIn,
@@ -25,7 +25,10 @@ module reg_id_ex(
 
 reg[`regAddrSize] rdAddr;
 
-
+always @(posedge clk ) begin
+    if(rst == `true)
+        jmpOp <= 2'b00;
+end
 always @(negedge clk ) begin
     rs <= rsIn;
     rt <= rtIn;

@@ -33,20 +33,23 @@ module cu(input clk,rst,
           output reg regFileIsIn,pcIsIn,
           output reg[`jmpOpSize] jmpOp
           );
-
+/*
     initial begin
         pcIsIn <= `true;
+        jmpOp <= 2'b00;
     end
-
+*/
 
 
     always @(posedge clk) begin
         //aluOp <= 2'b10;
         if(isPause) begin
-
+            regFileIsIn <= `false;
+            dataMemIsIn <= `false;
         end
         else if(rst == `true)begin
-        pcIsIn <= `true;      
+            pcIsIn <= `true;
+            jmpOp <= 2'b00;      
         end
         else    fork
             case(op)
@@ -106,20 +109,20 @@ module cu(input clk,rst,
                     pcIsIn <= `false;
                     regFileIsIn <= `false;
                     aluOp <= 2'b01;
-                    muxOperandControl <= 1'b0;
+                    muxOperandControl <= 1'b1;
                     dataMemIsIn <= `false;
                     dataMemIsOut <= `false;
                     muxWbDataControl <= 1'bx;
                     muxWbRegAddrControl <= 1'bx;   
                     jmpOp <= 2'b10;             
                 end
-                6'b000101: //beq
+                6'b000101: //bne
                 begin
 
                     pcIsIn <= `false;
                     regFileIsIn <= `false;
                     aluOp <= 2'b01;
-                    muxOperandControl <= 1'b0;
+                    muxOperandControl <= 1'b1;
                     dataMemIsIn <= `false;
                     dataMemIsOut <= `false;
                     muxWbDataControl <= 1'bx;

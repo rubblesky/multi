@@ -3,7 +3,7 @@
 
 `include "config.vh"
 module ex_tmp_reg (
-    input clk,
+    input clk,rst,
     input[`SIZE] instIn,
     input[`SIZE] rtIn,
 
@@ -16,7 +16,10 @@ module ex_tmp_reg (
     output reg dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,regFileIsIn,
     output reg[`jmpOpSize] jmpOp
 );
-
+always @(posedge clk ) begin
+    if(rst == `true)
+        jmpOp <= 2'b00;
+end
     always @(posedge clk) begin
         inst <= instIn;
         rt <= rtIn;

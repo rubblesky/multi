@@ -54,6 +54,7 @@ wire[`SIZE] newPc,pcOut;
 pc cpu_pc(
     .clk (clk),
     .rst(rst),
+    .isIn(pc_isIn),
     .newPc (newPc),
 
     .pcOut (pcOut)
@@ -116,8 +117,10 @@ wire cu_regFileIsIn,cu_muxOperandControl,cu_dataMemIsIn,cu_dataMemIsOut,cu_muxWb
 wire[`jmpOpSize] cu_jmpOp;
 cu cpu_cu(
     .clk(clk),
+    .rst(rst),
     .op(cu_op),
 
+    .pcIsIn(pc_isIn),
     .aluOp(cu_aluOp),
     .muxOperandControl(cu_muxOperandControl),
     .dataMemIsIn(cu_dataMemIsIn),
@@ -175,6 +178,7 @@ wire reg_id_ex_muxOperandControl,reg_id_ex_dataMemIsIn,reg_id_ex_dataMemIsOut,re
 wire [`jmpOpSize] reg_id_ex_jmpOp;
 reg_id_ex cpu_reg_id_ex(
     .clk(clk),
+    .rst(rst),
     .rsIn(reg_file_dataOut1),
     .rtIn(reg_file_dataOut2),
     .instIn(id_tmp_reg_inst),
@@ -246,6 +250,7 @@ wire ex_tmp_reg_dataMemIsIn,ex_tmp_reg_dataMemIsOut,ex_tmp_reg_muxWbDataControl,
 wire [`jmpOpSize] ex_tmp_reg_jmpOp;
 ex_tmp_reg cpu_ex_tmp_reg(
     .clk(clk),
+    .rst(rst),
     .instIn(reg_id_ex_inst),
     .rtIn(reg_id_ex_rt),
     .dataMemIsInIn(reg_id_ex_dataMemIsIn),
