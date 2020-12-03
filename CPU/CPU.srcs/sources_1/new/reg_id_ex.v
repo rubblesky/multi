@@ -23,9 +23,6 @@ module reg_id_ex(
 
 reg[`regAddrSize] rdAddr;
 
-always @(posedge clk ) begin
-    
-end
 
 always @(negedge clk ) begin
     rs <= rsIn;

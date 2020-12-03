@@ -39,8 +39,8 @@ module inst_mem(input wire clk,
             instruction <= memory[address[`instMemSizeLog2 - 1:0]];
         end
     join
-    always @(posedge clk) $display(" positive: isOut : %b, address : %h, fetch : %b\n",isOut,address[`instMemSizeLog2 - 1:0],instruction);
-    always @(posedge clk) $display(" negative: isOut : %b, address : %h, fetch : %b\n",isOut,address[`instMemSizeLog2 - 1:0],instruction);
+    //always @(posedge clk) $display(" positive: isOut : %b, address : %h, fetch : %b\n",isOut,address[`instMemSizeLog2 - 1:0],instruction);
+    //always @(posedge clk) $display(" negative: isOut : %b, address : %h, fetch : %b\n",isOut,address[`instMemSizeLog2 - 1:0],instruction);
 
 endmodule
 `endif

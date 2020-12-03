@@ -121,7 +121,12 @@ cu cpu_cu(
     .muxWbRegAddrControl(cu_muxWbRegAddrControl),
     .regFileIsIn(cu_regFileIsIn)
 );
-
+always @(posedge clk ) begin
+    $display(" CU pos cu_op : %b \n",cu_op);
+end
+always @(negedge clk ) begin
+    $display(" CU neg cu_muxWbRegAddrContorl : %d\n",cu_muxWbRegAddrControl);
+end
 //sign_extend
 wire [15:0] immediate;
 wire [`SIZE] sign_extend_extendedImmediate;
@@ -183,6 +188,11 @@ reg_id_ex cpu_reg_id_ex(
     .regFileIsIn(reg_id_ex_regFileIsIn)
 );
 
+always @(posedge clk ) begin
+    $display(" REG_ID_EX neg reg_id_ex_muxWbRegAddrControl : %d\n",reg_id_ex_muxWbRegAddrControl);
+end
+
+
 //mux_main_alu_operand
 wire [`SIZE] mux_main_alu_operand_dataOut;
 mux_main_alu_operand cpu_mux_main_alu_operand(
@@ -227,13 +237,16 @@ ex_tmp_reg cpu_ex_tmp_reg(
     .regFileIsIn(ex_tmp_reg_regFileIsIn)
 
 );
+always @(negedge clk ) begin
+    $display(" EX_TMP_Reg pos ex_tmp_reg_muxWbRegAddrControl : %b \n",ex_tmp_reg_muxWbRegAddrControl);
+end
 
 //reg_ex_mem
 wire [`SIZE] reg_ex_mem_inst,reg_ex_mem_rt,reg_ex_mem_calculation;
 wire reg_ex_mem_dataMemIsIn,reg_ex_mem_dataMemIsOut,reg_ex_mem_muxWbDataControl,reg_ex_mem_muxWbRegAddrControl,reg_ex_mem_regFileIsIn;
 reg_ex_mem cpu_reg_ex_mem(
     .clk(clk),
-    .instIn(id_tmp_reg_inst),
+    .instIn(ex_tmp_reg_inst),
     .rtIn(ex_tmp_reg_rt),
     .calculationIn(main_alu_dataOut),
     .dataMemIsInIn(ex_tmp_reg_dataMemIsIn),
@@ -251,6 +264,10 @@ reg_ex_mem cpu_reg_ex_mem(
     .muxWbRegAddrControl(reg_ex_mem_muxWbRegAddrControl),
     .regFileIsIn(reg_ex_mem_regFileIsIn)
 );
+always @(posedge clk ) begin
+    $display(" Reg_EX_MEM pos reg_ex_mem_muxWbRegAddrControl : %b \n",reg_ex_mem_muxWbRegAddrControl);
+end
+
 
 //data_mem
 wire[`SIZE] data_mem_dataOut ;
@@ -282,6 +299,10 @@ mem_tmp_reg cpu_mem_tmp_reg(
     .regFileIsIn(mem_tmp_reg_regFileIsIn)
 );
 
+always @(negedge clk ) begin
+    $display(" MEM_TMP_Reg neg mem_tmp_reg_muxWbRegAddrControl : %d\n",mem_tmp_reg_muxWbRegAddrControl);
+end
+
 //reg_mem_wb
 wire [`SIZE] reg_mem_wb_inst;
 wire [`SIZE] reg_mem_wb_calculation,reg_mem_wb_loadedData;
@@ -302,6 +323,10 @@ reg_mem_wb cpu_reg_mem_wb(
     .muxWbRegAddrControl(reg_mem_wb_muxWbRegAddrControl),
     .regFileIsIn(reg_mem_wb_regFileIsIn)
 );
+
+always @(posedge clk ) begin
+    $display(" Reg_MEM_WB pos reg_mem_wb_muxWbRegAddrControl : %b \n",reg_mem_wb_muxWbRegAddrControl);
+end
 
 //mux_wb_data
 wire [`SIZE] mux_wb_data_dataOut;

@@ -39,8 +39,8 @@ module main_alu(
             4'b1100: dataOut <= ~(dataIn1 | dataIn2);
         endcase
     join
-    always @(posedge clk) $display("MAIN ALU posative: dataIn1 : %d, dataIn2 : %d, aluControl : %b,dataOut : %d",dataIn1,dataIn2,aluControl,dataOut);
-    always @(negedge clk) $display("MAIN ALU negative: dataIn1 : %d, dataIn2 : %d, aluControl : %b,dataOut : %d",dataIn1,dataIn2,aluControl,dataOut);
+    //always @(posedge clk) $display("MAIN ALU posative: dataIn1 : %d, dataIn2 : %d, aluControl : %b,dataOut : %d",dataIn1,dataIn2,aluControl,dataOut);
+    //always @(negedge clk) $display("MAIN ALU negative: dataIn1 : %d, dataIn2 : %d, aluControl : %b,dataOut : %d",dataIn1,dataIn2,aluControl,dataOut);
 
 
 endmodule

@@ -28,8 +28,8 @@ module mux_wb_reg_addr(
     input[`regAddrSize] dataIn0,dataIn1,
     output[`regAddrSize] dataOut
     );
-always @( dataOut) begin
-    $display("mux wb addr control : %d dataOut : %d \n",control,dataOut);
+always @( dataIn0,dataIn1,control) begin
+    //$display("mux wb addr dataIn0 : %d dataIn1 : %d \n control : %d dataOut : %d \n",dataIn0,dataIn1,control,dataOut);
 end
     assign dataOut = (control)?dataIn1:dataIn0;
 
