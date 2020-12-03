@@ -24,17 +24,25 @@
 module CPU(
     input clk,
     input rst,
-
+    //if
     output wire[`SIZE] tb_newPc,tb_pcOut,tb_instruction,
+    //id
     output wire[`regAddrSize] tb_reg_file_addrOut1,tb_reg_file_addrOut2,
     output wire [`SIZE] tb_reg_file_dataOut1,tb_reg_file_dataOut2,
+    //ex
     output wire [`aluOpSize] tb_cu_aluOp,
     output wire[`SIZE] tb_mux_main_alu_operand_dataOut,
     output wire[`aluControlSize] tb_main_alu_control_aluControl,
     output wire [`SIZE] tb_main_alu_dataOut,
+   //mem
+    output wire[`SIZE] tb_reg_ex_mem_calculation,
+    output wire[`SIZE] tb_reg_ex_mem_rt,
+    output wire [`SIZE] tb_data_mem_dataOut,
+   //wb
     output wire [`SIZE] tb_reg_mem_wb_inst, 
     output wire tb_reg_mem_wb_regFileIsIn,
     output wire [`SIZE] tb_reg_mem_wb_calculation,
+    output wire [4:0] tb_rtAddr,
     output wire [`regAddrSize]tb_mux_wb_reg_addr_dataOut,
     output wire [`SIZE] tb_mux_wb_data_dataOut
     );
@@ -358,8 +366,14 @@ assign reg_file_addrIn = mux_wb_reg_addr_dataOut;
     assign tb_mux_main_alu_operand_dataOut = mux_main_alu_operand_dataOut;
     assign tb_main_alu_control_aluControl = main_alu_control_aluControl;
     assign tb_main_alu_dataOut = main_alu_dataOut;
+
+    assign tb_reg_ex_mem_calculation = reg_ex_mem_calculation;
+    assign tb_reg_ex_mem_rt = reg_ex_mem_rt;
+    assign tb_data_mem_dataOut = data_mem_dataOut;
+
     assign tb_reg_mem_wb_regFileIsIn = reg_mem_wb_regFileIsIn;
     assign tb_reg_mem_wb_calculation = reg_ex_mem_calculation;
+    assign tb_rtAddr = rtAddr;
     assign tb_mux_wb_reg_addr_dataOut = mux_wb_reg_addr_dataOut;
     assign tb_mux_wb_data_dataOut = mux_wb_data_dataOut;
 endmodule

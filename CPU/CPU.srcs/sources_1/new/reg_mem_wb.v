@@ -39,6 +39,7 @@ module reg_mem_wb(
     always @(negedge clk ) begin
         inst <= instIn;
         calculation <= calculationIn;
+        loadedData <= loadedDataIn;
         {muxWbDataControl,muxWbRegAddrControl,regFileIsIn} <= 
         {muxWbDataControlIn,muxWbRegAddrControlIn,regFileIsInIn};
     end

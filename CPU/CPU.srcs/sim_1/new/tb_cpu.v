@@ -55,8 +55,12 @@ end
 wire [`SIZE] tb_main_alu_dataOut;
 wire tb_reg_mem_wb_regFileIsIn;
 wire [`SIZE] tb_reg_mem_wb_calculation;
+wire [4:0] tb_rtAddr;
 wire [`regAddrSize]tb_mux_wb_reg_addr_dataOut;
  wire [`SIZE] tb_mux_wb_data_dataOut;
+ wire[`SIZE] tb_reg_ex_mem_calculation;
+wire[`SIZE] tb_reg_ex_mem_rt;
+wire [`SIZE] tb_data_mem_dataOut;
 CPU  u_CPU (
     .clk                     ( clk   ),
     .rst                     (rst),
@@ -72,8 +76,14 @@ CPU  u_CPU (
     .tb_mux_main_alu_operand_dataOut(tb_mux_main_alu_operand_dataOut),
     .tb_main_alu_control_aluControl(tb_main_alu_control_aluControl),
     .tb_main_alu_dataOut(tb_main_alu_dataOut),
+
+    .tb_reg_ex_mem_calculation(tb_reg_ex_mem_calculation),
+    .tb_reg_ex_mem_rt(tb_reg_ex_mem_rt),
+    .tb_data_mem_dataOut(tb_data_mem_dataOut),
+    
     .tb_reg_mem_wb_regFileIsIn(tb_reg_mem_wb_regFileIsIn),
     .tb_reg_mem_wb_calculation(tb_reg_mem_wb_calculation),
+    .tb_rtAddr(tb_rtAddr),
     .tb_mux_wb_reg_addr_dataOut(tb_mux_wb_reg_addr_dataOut),
     .tb_mux_wb_data_dataOut(tb_mux_wb_data_dataOut)
 );
