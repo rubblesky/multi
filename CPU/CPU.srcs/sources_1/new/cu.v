@@ -65,6 +65,16 @@ module cu(input clk,
                 muxWbDataControl <= 1'bx;
                 muxWbRegAddrControl <= 1'bx;               
             end
+            6'b001000: //addi
+            begin
+                regFileIsIn <= `true;
+                aluOp <= 2'b00;     //姑且这样 没有查资料
+                muxOperandControl <= 1'b0;
+                dataMemIsIn <= `false;
+                dataMemIsOut <= `false;
+                muxWbDataControl <= 1'b1;
+                muxWbRegAddrControl <= 1'b0;               
+            end
             /*
              6'b000100: //beq
              6'b000010: //jmp

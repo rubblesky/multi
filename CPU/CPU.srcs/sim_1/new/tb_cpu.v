@@ -90,7 +90,7 @@ CPU  u_CPU (
 
 initial
 begin
-    #150
+    #200
     $finish;
 end
 
