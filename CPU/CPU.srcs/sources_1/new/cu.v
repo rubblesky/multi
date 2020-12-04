@@ -48,6 +48,7 @@ module cu(input clk,rst,
             dataMemIsIn <= `false;
         end
         else if(rst == `true)begin
+            
             pcIsIn <= `true;
             jmpOp <= 2'b00;      
         end

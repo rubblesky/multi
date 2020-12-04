@@ -32,6 +32,13 @@
 
     reg[`SIZE] pc;
     reg isPause;
+
+always @(posedge clk ) begin
+    if(rst == `true)
+        pc <= 32'h00000000;
+        isPause <= `false;
+end
+
     always @(posedge clk ) begin
         if(rst == `true)begin
             pc <= 32'h00000000;
@@ -48,6 +55,6 @@ $display("---------------------------\n pc : %b\n",pc);
             isPause <= `true;
         end
     join
-    assign pcOut = pc; 
+    assign pcOut = (rst)?32'bz:pc; 
 endmodule
 `endif

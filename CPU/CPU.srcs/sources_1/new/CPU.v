@@ -25,6 +25,7 @@ module CPU(
     input clk,
     input rst,
     //if
+    output wire tb_pc_isIn,
     output wire[`SIZE] tb_newPc,tb_pcOut,tb_instruction,
     //id
     output wire[`regAddrSize] tb_reg_file_addrOut1,tb_reg_file_addrOut2,
@@ -64,6 +65,7 @@ pc cpu_pc(
 wire[`SIZE] pc_alu_nextPc;
 pc_alu cpu_pc_alu(
     .clk(clk),
+    .rst(rst),
     .pc(pcOut),
 
     .nextPc(pc_alu_nextPc)
@@ -428,6 +430,7 @@ assign reg_file_dataIn = mux_wb_data_dataOut;
 assign reg_file_addrIn = mux_wb_reg_addr_dataOut;
 
 //测试用
+    assign tb_pc_isIn = pc_isIn;
     assign tb_newPc = newPc;
     assign tb_pcOut = pcOut;
     assign tb_instruction = instruction;
@@ -445,7 +448,7 @@ assign reg_file_addrIn = mux_wb_reg_addr_dataOut;
     assign tb_data_mem_dataOut = data_mem_dataOut;
 
     assign tb_reg_mem_wb_regFileIsIn = reg_mem_wb_regFileIsIn;
-    assign tb_reg_mem_wb_calculation = reg_ex_mem_calculation;
+    assign tb_reg_mem_wb_calculation = reg_mem_wb_calculation;
     assign tb_rtAddr = rtAddr;
     assign tb_mux_wb_reg_addr_dataOut = mux_wb_reg_addr_dataOut;
     assign tb_mux_wb_data_dataOut = mux_wb_data_dataOut;

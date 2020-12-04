@@ -23,10 +23,18 @@
 
 `include "config.vh"
 module pc_alu(
-    input clk,
+    input clk,rst,
     input[`SIZE] pc,
     output reg[`SIZE] nextPc
     );
+
+
+
+always @(posedge clk ) begin
+    if(rst == `true)
+        nextPc <= 32'h00000000;
+
+end
 
     always @(posedge clk) fork
         nextPc <= pc + 1; 
