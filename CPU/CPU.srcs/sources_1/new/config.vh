@@ -12,6 +12,8 @@
 `define jmp 1'b1
 `define notJmp 1'b0 
 
+/**/
+`define regStatusSize 4:0
 
 `define SIZE 31:0
 `define instMemSize 0:1023

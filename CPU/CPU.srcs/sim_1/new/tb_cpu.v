@@ -69,7 +69,7 @@ CPU  u_CPU (
     .rst                     (rst),
 
     //.tb_newPc                                   (tb_newPc                      ),
-    //.tb_pc_isIn(tb_pc_isIn),
+    .tb_pc_isIn(tb_pc_isIn),
     .tb_pcOut                                 ( tb_pcOut                                  ),
     //.tb_instruction                           ( tb_instruction                            ),
     .tb_reg_file_addrOut1                            (tb_reg_file_addrOut1   ),

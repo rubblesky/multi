@@ -51,7 +51,7 @@ module CPU(
 
 //pc
 wire[`SIZE] newPc,pcOut;
-
+wire pc_isIn;
 pc cpu_pc(
     .clk (clk),
     .rst(rst),
@@ -82,6 +82,17 @@ inst_mem cpu_inst_mem(
 
     .instruction(instruction)
 );
+
+//status_regs
+wire status_regs_pcIsIn;
+status_regs cpu_status_regs(
+    .clk(clk),
+    .rst(rst),
+    .inst(instruction),
+
+    .pcIsIn(status_regs_pcIsIn)
+);
+
 
 //reg_if_id
 wire[`SIZE] reg_if_id_inst,reg_if_id_pc;
@@ -114,6 +125,7 @@ reg_file cpu_reg_file(
 
 //cu
 wire[5:0] cu_op;
+wire cu_pcIsIn;
 wire[`aluOpSize] cu_aluOp;
 wire cu_regFileIsIn,cu_muxOperandControl,cu_dataMemIsIn,cu_dataMemIsOut,cu_muxWbDataControl,cu_muxWbRegAddrControl;
 wire[`jmpOpSize] cu_jmpOp;
@@ -122,7 +134,7 @@ cu cpu_cu(
     .rst(rst),
     .op(cu_op),
 
-    .pcIsIn(pc_isIn),
+    .pcIsIn(cu_pcIsIn),
     .aluOp(cu_aluOp),
     .muxOperandControl(cu_muxOperandControl),
     .dataMemIsIn(cu_dataMemIsIn),
@@ -415,7 +427,8 @@ mux_wb_reg_addr cpu_mux_wb_reg_addr(
 
 
 
-
+//获得pc_isIn
+assign pc_isIn = status_regs_pcIsIn && cu_pcIsIn;
 
 
 //连接cu和if_id_reg

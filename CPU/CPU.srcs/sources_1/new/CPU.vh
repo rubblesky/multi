@@ -5,6 +5,7 @@
 `include "pc_alu.v"
 `include "pause_control.v"
 `include "inst_mem.v"
+`include "status_regs.v"
 `include "reg_if_id.v"
 `include "reg_file.v"
 `include "cu.v"
