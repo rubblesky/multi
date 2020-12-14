@@ -26,13 +26,15 @@ module pc_select_control(
 
     input[`jmpOpSize] jmpOp,
     input[`SIZE] calculation,
-    output muxPcControl
+    output muxPcControl,muxJmpPcControl
     );
 
     assign muxPcControl = (jmpOp == 2'b11 || 
     (jmpOp == 2'b10 && calculation == 0)  ||
     (jmpOp == 2'b01 && calculation != 0) ) ? 1'b1:1'b0; 
     
+    assign muxJmpPcControl = (jmpOp == 2'b11)?1'b1:1'b0;
+
 endmodule
 
 `endif

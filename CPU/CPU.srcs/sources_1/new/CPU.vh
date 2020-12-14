@@ -17,6 +17,7 @@
 `include "jmp_alu.v"
 `include "ex_tmp_reg.v"
 `include "pc_select_control.v"
+`include "mux_jmp_pc.v"
 `include "mux_pc.v"
 `include "reg_ex_mem.v"
 `include "data_mem.v"

@@ -131,9 +131,19 @@ module cu(input clk,rst,
                     jmpOp <= 2'b01;             
                 end
 
-                /*
+
                 6'b000010: //jmp
-                */
+                begin
+                    pcIsIn <= `false;
+                    regFileIsIn <= `false;
+                    aluOp <= 2'bxx;
+                    muxOperandControl <= 1'bx;
+                    dataMemIsIn <= `false;
+                    dataMemIsOut <= `false;
+                    muxWbDataControl <= 1'bx;
+                    muxWbRegAddrControl <= 1'bx;   
+                    jmpOp <= 2'b11;             
+                end                    
             endcase
 
         join

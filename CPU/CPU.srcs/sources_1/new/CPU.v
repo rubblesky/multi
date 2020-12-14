@@ -237,23 +237,24 @@ main_alu cpu_main_alu(
 );
 
 //jmp_alu
-wire[`SIZE] jmp_alu_jmpPc;
+wire[`SIZE] jmp_alu_branchJmpPc;
 jmp_alu cpu_jmp_alu(
     .clk(clk),
     .pc(reg_id_ex_pc),
     .addr(reg_id_ex_extendImmediate),
-    .jmpPc(jmp_alu_jmpPc)
+    .jmpPc(jmp_alu_branchjmpPc)
 );
 
 
 //ex_tmp_reg
-wire [`SIZE] ex_tmp_reg_inst,ex_tmp_reg_rt;
+wire [`SIZE] ex_tmp_reg_inst,ex_tmp_reg_rt,ex_tmp_reg_pc;
 wire ex_tmp_reg_dataMemIsIn,ex_tmp_reg_dataMemIsOut,ex_tmp_reg_muxWbDataControl,ex_tmp_reg_muxWbRegAddrControl,ex_tmp_reg_regFileIsIn;
 wire [`jmpOpSize] ex_tmp_reg_jmpOp;
 ex_tmp_reg cpu_ex_tmp_reg(
     .clk(clk),
     .rst(rst),
     .instIn(reg_id_ex_inst),
+    .pcIn(reg_id_ex_pc),
     .rtIn(reg_id_ex_rt),
     .dataMemIsInIn(reg_id_ex_dataMemIsIn),
     .dataMemIsOutIn(reg_id_ex_dataMemIsOut),
@@ -264,6 +265,7 @@ ex_tmp_reg cpu_ex_tmp_reg(
 
     .inst(ex_tmp_reg_inst),
     .rt(ex_tmp_reg_rt),
+    .pc(ex_tmp_reg_pc),
     .dataMemIsIn(ex_tmp_reg_dataMemIsIn),
     .dataMemIsOut(ex_tmp_reg_dataMemIsOut),
     .muxWbDataControl(ex_tmp_reg_muxWbDataControl),
@@ -276,20 +278,33 @@ always @(negedge clk ) begin
 end
 
 //pc_select_control
-wire pc_select_control_muxPcControl;
+wire pc_select_control_muxPcControl,pc_select_control_muxJmpPcControl;
 pc_select_control cpu_pc_select_control(
     .jmpOp(ex_tmp_reg_jmpOp),
     .calculation(main_alu_dataOut),
-    .muxPcControl(pc_select_control_muxPcControl)
+    .muxPcControl(pc_select_control_muxPcControl),
+    .muxJmpPcControl(pc_select_control_muxJmpPcControl)
+);
+
+//mux_jmp_pc
+wire [`SIZE] unconditionalJmpPc,mux_jmp_pc_jmpPc;
+mux_jmp_pc cpu_mux_jmp_pc(
+    .control(pc_select_control_muxJmpPcControl),
+    .pc0(jmp_alu_branchjmpPc),
+    .pc1(unconditionalJmpPc),
+    .jmpPc(mux_jmp_pc_jmpPc)
 );
 
 //mux_pc
 mux_pc cpu_mux_pc(
     .control(pc_select_control_muxPcControl),
-    .jmpPc(jmp_alu_jmpPc),
+    .jmpPc(mux_jmp_pc_jmpPc),
     .nextPc(pc_alu_nextPc),
     .newPc(newPc)
 );
+
+
+
 
 //reg_ex_mem
 wire [`SIZE] reg_ex_mem_inst,reg_ex_mem_rt,reg_ex_mem_calculation;
@@ -418,6 +433,10 @@ assign immediate = reg_if_id_inst[`immediatePos];
 
 //连接main_alu_control和id_tmp_reg
 assign main_alu_control_funct = id_tmp_reg_inst[`functPos];
+
+//连接unconditionalJmpPc和偏移量
+assign unconditionalJmpPc = {ex_tmp_reg_pc[31:26],ex_tmp_reg_inst[25:0]};
+
 
 //连接mux_wb_reg_addr和reg_mem_wb
 assign rdAddr = reg_mem_wb_inst[`rdPos];
