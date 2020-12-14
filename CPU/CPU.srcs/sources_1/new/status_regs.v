@@ -101,8 +101,10 @@ module status_regs(
             status[30] = status[30] >> 1;
             status[31] = status[31] >> 1;
     join
-    assign pcIsIn = (inst[`opPos] == 6'b000000 && 
-    status[inst[`rsPos]] == 0 && status[inst[`rtPos]] == 0)?`true:`false;
+    assign pcIsIn = 
+    (inst[`opPos] == 6'b000000 && status[inst[`rsPos]] == 0 && status[inst[`rtPos]] == 0||
+    inst[`opPos] != 6'b000000
+    )?`true:`false;
 
     always @(negedge clk ) begin
         if(pcIsIn == `true && inst[`opPos] == 6'b000000)

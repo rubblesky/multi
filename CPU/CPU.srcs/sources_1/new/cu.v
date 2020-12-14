@@ -53,6 +53,7 @@ module cu(input clk,rst,
             jmpOp <= 2'b00;      
         end
         else    fork
+            
             case(op)
                 6'b000000: //R型指令 mux控制 一律为1
                 begin
@@ -144,6 +145,7 @@ module cu(input clk,rst,
                     muxWbRegAddrControl <= 1'bx;   
                     jmpOp <= 2'b11;             
                 end      
+                /*
                 6'b000000:
                 begin
                     pcIsIn <= `true;
@@ -155,7 +157,8 @@ module cu(input clk,rst,
                     muxWbDataControl <= 1'bx;
                     muxWbRegAddrControl <= 1'bx;   
                     jmpOp <= 2'b00;             
-                end                 
+                end
+                */                 
             endcase
 
         join

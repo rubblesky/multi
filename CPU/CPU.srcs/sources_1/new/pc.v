@@ -27,11 +27,11 @@
     input clk,rst,
     input isIn,
     input[`SIZE] newPc,
-    output[`SIZE] pcOut
+    output[`SIZE] pcOut,
+    output reg isPause
     );
 
     reg[`SIZE] pc;
-    reg isPause;
 
 always @(posedge clk ) begin
     if(rst == `true)

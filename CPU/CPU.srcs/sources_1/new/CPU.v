@@ -51,14 +51,15 @@ module CPU(
 
 //pc
 wire[`SIZE] newPc,pcOut;
-wire pc_isIn;
+wire pc_isIn,pc_isPause;
 pc cpu_pc(
     .clk (clk),
     .rst(rst),
     .isIn(pc_isIn),
     .newPc (newPc),
 
-    .pcOut (pcOut)
+    .pcOut (pcOut),
+    .isPause(pc_isPause)
 );
 
 //pc_alu
@@ -71,6 +72,13 @@ pc_alu cpu_pc_alu(
     .nextPc(pc_alu_nextPc)
 );
 
+//pause_control
+wire pause_control_isPause;
+pause_control cpu_pause_control(
+    .clk(clk),
+    .isPauseIn(pc_isPause),
+    .isPause(pause_control_isPause)
+);
 
 //inst_mem
 
@@ -96,13 +104,18 @@ status_regs cpu_status_regs(
 
 //reg_if_id
 wire[`SIZE] reg_if_id_inst,reg_if_id_pc;
+wire reg_if_id_isPause;
 reg_if_id cpu_reg_if_id(
     .clk(clk),
     .instIn(instruction),
     .pcIn(pc_alu_nextPc),
+    
+    .isPauseIn(pause_control_isPause),
 
     .inst(reg_if_id_inst),
-    .pc(reg_if_id_pc)
+    .pc(reg_if_id_pc),
+
+    .isPause(reg_if_id_isPause)
 );
 
 //reg_file
@@ -133,6 +146,7 @@ cu cpu_cu(
     .clk(clk),
     .rst(rst),
     .op(cu_op),
+    .isPause(reg_if_id_isPause),
 
     .pcIsIn(cu_pcIsIn),
     .aluOp(cu_aluOp),
