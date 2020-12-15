@@ -26,7 +26,8 @@
 module status_regs(
     input clk,rst,
     input [`SIZE] inst,
-    output pcIsIn
+    output pcIsNotDataHazard,
+    output isPause
     );
     reg [`regStatusSize]status[`SIZE];
     always @(posedge clk ) begin
@@ -101,13 +102,13 @@ module status_regs(
             status[30] = status[30] >> 1;
             status[31] = status[31] >> 1;
     join
-    assign pcIsIn = 
+    assign pcIsNotDataHazard = 
     (inst[`opPos] == 6'b000000 && status[inst[`rsPos]] == 0 && status[inst[`rtPos]] == 0||
     inst[`opPos] != 6'b000000
     )?`true:`false;
-
+    assign isPause = !pcIsNotDataHazard;
     always @(negedge clk ) begin
-        if(pcIsIn == `true && inst[`opPos] == 6'b000000)
+        if(pcIsNotDataHazard == `true && inst[`opPos] == 6'b000000)
             status[inst[`rdPos]] <= 5'b10000 ;
     end
 

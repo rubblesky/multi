@@ -51,11 +51,12 @@ module CPU(
 
 //pc
 wire[`SIZE] newPc,pcOut;
-wire pc_isIn,pc_isPause;
+wire pc_isNotBranch,pc_isNotDataHazard,pc_isPause;
 pc cpu_pc(
     .clk (clk),
     .rst(rst),
-    .isIn(pc_isIn),
+    .isNotBranch(pc_isNotBranch),
+    .isNotDataHazard(pc_isNotDataHazard),
     .newPc (newPc),
 
     .pcOut (pcOut),
@@ -92,25 +93,26 @@ inst_mem cpu_inst_mem(
 );
 
 //status_regs
-wire status_regs_pcIsIn;
+wire status_regs_pcIsNotDataHazard,status_regs_isPause;
 status_regs cpu_status_regs(
     .clk(clk),
     .rst(rst),
     .inst(instruction),
 
-    .pcIsIn(status_regs_pcIsIn)
+    .pcIsNotDataHazard(status_regs_pcIsNotDataHazard),
+    .isPause(status_regs_isPause)
 );
 
 
 //reg_if_id
 wire[`SIZE] reg_if_id_inst,reg_if_id_pc;
-wire reg_if_id_isPause;
+wire reg_if_id_isPauseIn,reg_if_id_isPause;
 reg_if_id cpu_reg_if_id(
     .clk(clk),
     .instIn(instruction),
     .pcIn(pc_alu_nextPc),
     
-    .isPauseIn(pause_control_isPause),
+    .isPauseIn(reg_if_id_isPauseIn),
 
     .inst(reg_if_id_inst),
     .pc(reg_if_id_pc),
@@ -138,7 +140,7 @@ reg_file cpu_reg_file(
 
 //cu
 wire[5:0] cu_op;
-wire cu_pcIsIn;
+wire cu_pcIsNotBranch;
 wire[`aluOpSize] cu_aluOp;
 wire cu_regFileIsIn,cu_muxOperandControl,cu_dataMemIsIn,cu_dataMemIsOut,cu_muxWbDataControl,cu_muxWbRegAddrControl;
 wire[`jmpOpSize] cu_jmpOp;
@@ -148,7 +150,7 @@ cu cpu_cu(
     .op(cu_op),
     .isPause(reg_if_id_isPause),
 
-    .pcIsIn(cu_pcIsIn),
+    .pcIsNotBranch(cu_pcIsNotBranch),
     .aluOp(cu_aluOp),
     .muxOperandControl(cu_muxOperandControl),
     .dataMemIsIn(cu_dataMemIsIn),
@@ -158,12 +160,7 @@ cu cpu_cu(
     .regFileIsIn(cu_regFileIsIn),
     .jmpOp(cu_jmpOp)
 );
-always @(posedge clk ) begin
-    $display(" CU pos cu_op : %b \n",cu_op);
-end
-always @(negedge clk ) begin
-    $display(" CU neg cu_muxWbRegAddrContorl : %d\n",cu_muxWbRegAddrControl);
-end
+
 //sign_extend
 wire [15:0] immediate;
 wire [`SIZE] sign_extend_extendedImmediate;
@@ -202,7 +199,8 @@ main_alu_control cpu_main_alu_control(
 wire[`SIZE] reg_id_ex_rs,reg_id_ex_rt;
 wire[`SIZE] reg_id_ex_inst,reg_id_ex_pc;
 wire [`SIZE] reg_id_ex_extendImmediate;
-wire reg_id_ex_muxOperandControl,reg_id_ex_dataMemIsIn,reg_id_ex_dataMemIsOut,reg_id_ex_muxWbDataControl,reg_id_ex_muxWbRegAddrControl,reg_id_ex_regFileIsIn;
+wire reg_id_ex_muxOperandControl,reg_id_ex_dataMemIsIn,reg_id_ex_dataMemIsOut,reg_id_ex_muxWbDataControl,
+reg_id_ex_muxWbRegAddrControl,reg_id_ex_regFileIsIn;
 wire [`jmpOpSize] reg_id_ex_jmpOp;
 reg_id_ex cpu_reg_id_ex(
     .clk(clk),
@@ -235,9 +233,6 @@ reg_id_ex cpu_reg_id_ex(
     .jmpOp(reg_id_ex_jmpOp)
 );
 
-always @(posedge clk ) begin
-    $display(" REG_ID_EX neg reg_id_ex_muxWbRegAddrControl : %d\n",reg_id_ex_muxWbRegAddrControl);
-end
 
 
 //mux_main_alu_operand
@@ -263,7 +258,7 @@ main_alu cpu_main_alu(
 );
 
 //jmp_alu
-wire[`SIZE] jmp_alu_branchJmpPc;
+wire [`SIZE] jmp_alu_branchJmpPc;
 jmp_alu cpu_jmp_alu(
     .clk(clk),
     .pc(reg_id_ex_pc),
@@ -299,9 +294,6 @@ ex_tmp_reg cpu_ex_tmp_reg(
     .regFileIsIn(ex_tmp_reg_regFileIsIn),
     .jmpOp(ex_tmp_reg_jmpOp)
 );
-always @(negedge clk ) begin
-    $display(" EX_TMP_Reg pos ex_tmp_reg_muxWbRegAddrControl : %b \n",ex_tmp_reg_muxWbRegAddrControl);
-end
 
 //pc_select_control
 wire pc_select_control_muxPcControl,pc_select_control_muxJmpPcControl;
@@ -355,9 +347,6 @@ reg_ex_mem cpu_reg_ex_mem(
     .muxWbRegAddrControl(reg_ex_mem_muxWbRegAddrControl),
     .regFileIsIn(reg_ex_mem_regFileIsIn)
 );
-always @(posedge clk ) begin
-    $display(" Reg_EX_MEM pos reg_ex_mem_muxWbRegAddrControl : %b \n",reg_ex_mem_muxWbRegAddrControl);
-end
 
 
 //data_mem
@@ -390,9 +379,7 @@ mem_tmp_reg cpu_mem_tmp_reg(
     .regFileIsIn(mem_tmp_reg_regFileIsIn)
 );
 
-always @(negedge clk ) begin
-    $display(" MEM_TMP_Reg neg mem_tmp_reg_muxWbRegAddrControl : %d\n",mem_tmp_reg_muxWbRegAddrControl);
-end
+
 
 //reg_mem_wb
 wire [`SIZE] reg_mem_wb_inst;
@@ -415,9 +402,6 @@ reg_mem_wb cpu_reg_mem_wb(
     .regFileIsIn(reg_mem_wb_regFileIsIn)
 );
 
-always @(posedge clk ) begin
-    $display(" Reg_MEM_WB pos reg_mem_wb_muxWbRegAddrControl : %b \n",reg_mem_wb_muxWbRegAddrControl);
-end
 
 //mux_wb_data
 wire [`SIZE] mux_wb_data_dataOut;
@@ -441,9 +425,12 @@ mux_wb_reg_addr cpu_mux_wb_reg_addr(
 
 
 
-//获得pc_isIn
-assign pc_isIn = status_regs_pcIsIn && cu_pcIsIn;
+//获得pc控制信息
+assign pc_isNotBranch = cu_pcIsNotBranch;
+assign pc_isNotDataHazard = status_regs_pcIsNotDataHazard;
 
+//连接reg_if_id的isPause信息
+assign reg_if_id_isPauseIn = pause_control_isPause || status_regs_isPause;
 
 //连接cu和if_id_reg
 assign cu_op = reg_if_id_inst[`opPos];
@@ -476,7 +463,11 @@ assign reg_file_dataIn = mux_wb_data_dataOut;
 assign reg_file_addrIn = mux_wb_reg_addr_dataOut;
 
 //测试用
-    assign tb_pc_isIn = pc_isIn;
+    //assign tb_pc_isIn = pc_isNotBranch && pc_isNotDataHazard;
+    assign tb_pc_isIn = pc_isNotDataHazard;
+    always @(posedge clk ) begin
+    $display("tb_pc_isIn : %b pc_isNotDataHazard : %b status_regs_pcIsNotDataHazard : %b\n",tb_pc_isIn,pc_isNotDataHazard,status_regs_pcIsNotDataHazard);
+end
     assign tb_newPc = newPc;
     assign tb_pcOut = pcOut;
     assign tb_instruction = instruction;

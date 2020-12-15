@@ -30,16 +30,22 @@ module cu(input clk,rst,
 
           output reg[`aluOpSize] aluOp,
           output reg muxOperandControl,dataMemIsIn,dataMemIsOut,muxWbDataControl,muxWbRegAddrControl,
-          output reg regFileIsIn,pcIsIn,
+          output reg regFileIsIn,pcIsNotBranch,
           output reg[`jmpOpSize] jmpOp
           );
 /*
     initial begin
-        pcIsIn <= `true;
+        pcIsNotBranch <= `true;
         jmpOp <= 2'b00;
     end
 */
 
+        always @(posedge clk ) begin
+            if(rst == `true)begin
+                pcIsNotBranch <= `true;
+                jmpOp <= 2'b00;               
+            end
+        end
 
     always @(posedge clk) begin
         //aluOp <= 2'b10;
@@ -49,7 +55,7 @@ module cu(input clk,rst,
         end
         else if(rst == `true)begin
             
-            pcIsIn <= `true;
+            pcIsNotBranch <= `true;
             jmpOp <= 2'b00;      
         end
         else    fork
@@ -57,7 +63,7 @@ module cu(input clk,rst,
             case(op)
                 6'b000000: //R型指令 mux控制 一律为1
                 begin
-                    pcIsIn <= `true;
+                    pcIsNotBranch <= `true;
                     regFileIsIn <= `true;
                     aluOp       <= 2'b10;
                     muxOperandControl <= 1'b1;
@@ -70,7 +76,7 @@ module cu(input clk,rst,
                 
                 6'b100011: //lw 
                 begin
-                    pcIsIn <= `true;
+                    pcIsNotBranch <= `true;
                     regFileIsIn <= `true;
                     aluOp <= 2'b00;
                     muxOperandControl <= 1'b0;
@@ -82,7 +88,7 @@ module cu(input clk,rst,
                 end
                 6'b101011: //sw
                 begin
-                    pcIsIn <= `true;
+                    pcIsNotBranch <= `true;
                     regFileIsIn <= `false;
                     aluOp <= 2'b00;
                     muxOperandControl <= 1'b0;
@@ -94,7 +100,7 @@ module cu(input clk,rst,
                 end
                 6'b001000: //addi
                 begin
-                    pcIsIn <= `true;
+                    pcIsNotBranch <= `true;
                     regFileIsIn <= `true;
                     aluOp <= 2'b00;     //姑且这样 没有查资料
                     muxOperandControl <= 1'b0;
@@ -108,7 +114,7 @@ module cu(input clk,rst,
                 6'b000100: //beq
                 begin
 
-                    pcIsIn <= `false;
+                    pcIsNotBranch <= `false;
                     regFileIsIn <= `false;
                     aluOp <= 2'b01;
                     muxOperandControl <= 1'b1;
@@ -121,7 +127,7 @@ module cu(input clk,rst,
                 6'b000101: //bne
                 begin
 
-                    pcIsIn <= `false;
+                    pcIsNotBranch <= `false;
                     regFileIsIn <= `false;
                     aluOp <= 2'b01;
                     muxOperandControl <= 1'b1;
@@ -135,7 +141,7 @@ module cu(input clk,rst,
 
                 6'b000010: //jmp
                 begin
-                    pcIsIn <= `false;
+                    pcIsNotBranch <= `false;
                     regFileIsIn <= `false;
                     aluOp <= 2'bxx;
                     muxOperandControl <= 1'bx;
@@ -148,7 +154,7 @@ module cu(input clk,rst,
                 /*
                 6'b000000:
                 begin
-                    pcIsIn <= `true;
+                    pcIsNotBranch <= `true;
                     regFileIsIn <= `false;
                     aluOp <= 2'bxx;
                     muxOperandControl <= 1'bx;

@@ -25,7 +25,7 @@
 `include "config.vh"
  module pc(
     input clk,rst,
-    input isIn,
+    input isNotBranch,isNotDataHazard,
     input[`SIZE] newPc,
     output[`SIZE] pcOut,
     output reg isPause
@@ -44,14 +44,14 @@ end
             pc <= 32'h00000000;
             isPause <= `false;
         end
-$display("---------------------------\n pc : %b\n",pc);
+$display("---------------------------\n pc : %b  isNotDataHazard : %b\n",pc,isNotDataHazard);
     end
 
     always @(negedge clk) fork
-        if(rst != `true && isIn == `true)begin
+        if(rst != `true && isNotBranch == `true && isNotDataHazard == `true)begin
             pc <= newPc;            
         end
-        else if(isIn == `false)begin
+        else if(isNotBranch == `false)begin
             isPause <= `true;
         end
     join

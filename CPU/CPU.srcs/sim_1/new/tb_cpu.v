@@ -63,7 +63,7 @@ wire [`SIZE] tb_reg_mem_wb_calculation;
 //wire [4:0] tb_rtAddr;
 wire [`regAddrSize]tb_mux_wb_reg_addr_dataOut;
  wire [`SIZE] tb_mux_wb_data_dataOut;
-
+wire tb_pc_isIn;
 CPU  u_CPU (
     .clk                     ( clk   ),
     .rst                     (rst),

@@ -24,7 +24,8 @@
 `include "config.vh"
 module mux_jmp_pc(
     input control,
-    input [`SIZE] pc0,pc1,
+    input [`SIZE] pc0,
+    input [`SIZE] pc1,
     output[`SIZE] jmpPc
     );
     assign jmpPc = (control)?pc1:pc0;
