@@ -45,7 +45,11 @@ module CPU(
     output wire [`SIZE] tb_reg_mem_wb_calculation,
     output wire [4:0] tb_rtAddr,
     output wire [`regAddrSize]tb_mux_wb_reg_addr_dataOut,
-    output wire [`SIZE] tb_mux_wb_data_dataOut
+    output wire [`SIZE] tb_mux_wb_data_dataOut,
+
+    //forward
+    output wire [`forwardMuxControlSize] tb_ex_forward_detection_rsMuxControl,
+    output wire [`forwardMuxControlSize] tb_ex_forward_detection_rtMuxControl
     );
 
 
@@ -492,7 +496,7 @@ wb_tmp_reg cpu_wb_tmp_reg(
 
 //id_forward_detection
 wire [`forwardMuxControlSize] id_forward_detection_rsMuxControl,id_forward_detection_rtMuxControl;
-forward_detection id_forward_detection(
+id_forward_detection cpu_id_forward_detection(
     .clk(clk),
     .rst(rst),
     .inst(reg_if_id_inst),
@@ -509,7 +513,7 @@ forward_detection id_forward_detection(
 
 //ex_forward_detection
 wire [`forwardMuxControlSize] ex_forward_detection_rsMuxControl,ex_forward_detection_rtMuxControl;
-forward_detection ex_forward_detection(
+ex_forward_detection cpu_ex_forward_detection(
     .clk(clk),
     .rst(rst),
     .inst(id_tmp_reg_inst),
@@ -601,5 +605,8 @@ end
     assign tb_rtAddr = rtAddr;
     assign tb_mux_wb_reg_addr_dataOut = mux_wb_reg_addr_dataOut;
     assign tb_mux_wb_data_dataOut = mux_wb_data_dataOut;
+
+    assign tb_ex_forward_detection_rsMuxControl = ex_forward_detection_rsMuxControl;
+    assign tb_ex_forward_detection_rtMuxControl = ex_forward_detection_rtMuxControl;
 endmodule
 

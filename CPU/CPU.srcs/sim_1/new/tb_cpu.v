@@ -64,6 +64,10 @@ wire [`SIZE] tb_reg_mem_wb_calculation;
 wire [`regAddrSize]tb_mux_wb_reg_addr_dataOut;
  wire [`SIZE] tb_mux_wb_data_dataOut;
 wire tb_pc_isIn;
+
+wire [`forwardMuxControlSize] tb_ex_forward_detection_rsMuxControl;
+wire [`forwardMuxControlSize] tb_ex_forward_detection_rtMuxControl;
+
 CPU  u_CPU (
     .clk                     ( clk   ),
     .rst                     (rst),
@@ -90,7 +94,10 @@ CPU  u_CPU (
     //.tb_rtAddr(tb_rtAddr),
 
     .tb_mux_wb_reg_addr_dataOut(tb_mux_wb_reg_addr_dataOut),
-    .tb_mux_wb_data_dataOut(tb_mux_wb_data_dataOut)
+    .tb_mux_wb_data_dataOut(tb_mux_wb_data_dataOut),
+
+    .tb_ex_forward_detection_rsMuxControl(tb_ex_forward_detection_rsMuxControl),
+    .tb_ex_forward_detection_rtMuxControl(tb_ex_forward_detection_rtMuxControl)
 );
 
 initial

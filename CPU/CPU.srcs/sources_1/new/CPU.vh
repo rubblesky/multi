@@ -28,6 +28,7 @@
 `include "mux_wb_reg_addr.v"
 `include "wb_tmp_reg.v"
 
-`include "forward_detection.v"
+`include "id_forward_detection.v"
+`include "ex_forward_detection.v"
 `include "mux_forward.v"
 `endif

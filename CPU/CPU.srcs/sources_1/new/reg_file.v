@@ -41,7 +41,7 @@ initial
 begin
     file[0] = 0;
     for(i = 1;i <32 ;i=i+1)
-        file[i] = 0;  
+        file[i] = 1;  
 
 end
 

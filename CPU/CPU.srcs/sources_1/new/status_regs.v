@@ -103,13 +103,13 @@ module status_regs(
             status[31] = status[31] >> 1;
     join
     assign pcIsNotDataHazard = 
-    (inst[`opPos] == 6'b000000 && status[inst[`rsPos]] == 0 && status[inst[`rtPos]] == 0||
+    (inst[`opPos] == 6'b000000 && status[inst[`rsPos]] <= 5'b00010 && status[inst[`rtPos]] <= 5'b00010||
     inst[`opPos] != 6'b000000
     )?`true:`false;
     assign isPause = !pcIsNotDataHazard;
     always @(negedge clk ) begin
         if(pcIsNotDataHazard == `true && inst[`opPos] == 6'b000000)
-            status[inst[`rdPos]] <= 5'b10000 ;
+            status[inst[`rdPos]] <= 5'b00100 ;
     end
 
 endmodule

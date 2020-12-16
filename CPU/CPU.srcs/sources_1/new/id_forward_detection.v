@@ -24,7 +24,7 @@
 `include "config.vh"
 module id_forward_detection(
     input clk,rst,
-    input [`SIZE] idInst,
+    input [`SIZE] inst,
     input [`SIZE] memInst,wbInst,
     input memIsWb,memWbAddr,wbIsWb,wbWbAddr,
     output reg[`forwardMuxControlSize] rsMuxControl,rtMuxControl
@@ -39,13 +39,13 @@ module id_forward_detection(
     
     always @(posedge clk ) begin
         if(memIsWb &&
-        (memWbAddr == `wbRtAddr && memInst[`rtPos] == idInst[`rsPos] 
-        || memWbAddr == `wbRdAddr && memInst[`rdPos] == idInst[`rsPos]))begin
+        (memWbAddr == `wbRtAddr && memInst[`rtPos] == inst[`rsPos] 
+        || memWbAddr == `wbRdAddr && memInst[`rdPos] == inst[`rsPos]))begin
             rsMuxControl <= `memForward;
         end
         else if(wbIsWb &&
-        (wbWbAddr == `wbRtAddr && wbInst[`rtPos] == idInst[`rsPos] 
-        || wbWbAddr == `wbRdAddr && wbInst[`rdPos] == idInst[`rsPos]))begin      
+        (wbWbAddr == `wbRtAddr && wbInst[`rtPos] == inst[`rsPos] 
+        || wbWbAddr == `wbRdAddr && wbInst[`rdPos] == inst[`rsPos]))begin      
             rsMuxControl <= `wbForward;
         end
         else begin
@@ -53,13 +53,13 @@ module id_forward_detection(
         end
 
         if(memIsWb &&
-        (memWbAddr == `wbRtAddr && memInst[`rtPos] == idInst[`rtPos] 
-        || memWbAddr == `wbRdAddr && memInst[`rdPos] == idInst[`rtPos]))begin
+        (memWbAddr == `wbRtAddr && memInst[`rtPos] == inst[`rtPos] 
+        || memWbAddr == `wbRdAddr && memInst[`rdPos] == inst[`rtPos]))begin
             rtMuxControl <= `memForward;
         end
         else if(wbIsWb &&
-        (wbWbAddr == `wbRtAddr && wbInst[`rtPos] == idInst[`rtPos] 
-        || wbWbAddr == `wbRdAddr && wbInst[`rdPos] == idInst[`rtPos]))begin      
+        (wbWbAddr == `wbRtAddr && wbInst[`rtPos] == inst[`rtPos] 
+        || wbWbAddr == `wbRdAddr && wbInst[`rdPos] == inst[`rtPos]))begin      
             rtMuxControl <= `wbForward;
         end
         else begin

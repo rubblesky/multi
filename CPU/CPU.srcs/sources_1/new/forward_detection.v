@@ -37,7 +37,7 @@ module forward_detection(
         end
     end
     
-    always @(posedge clk ) begin
+    always @(negedge clk ) begin
         if(memIsWb &&
         (memWbAddr == `wbRtAddr && memInst[`rtPos] == inst[`rsPos] 
         || memWbAddr == `wbRdAddr && memInst[`rdPos] == inst[`rsPos]))begin
