@@ -1,14 +1,11 @@
-`ifndef MUX_WB_REG_ADDR_V
-`define MUX_WB_REG_ADDR_V
-
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/12/02 16:44:53
+// Create Date: 2020/12/16 15:45:43
 // Design Name: 
-// Module Name: mux_wb_reg_addr
+// Module Name: mux_forward_main_alu2
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -22,16 +19,8 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-`include "config.vh"
-module mux_wb_reg_addr(
-    input control,
-    input[`regAddrSize] rtAddrIn,rdAddrIn,
-    output[`regAddrSize] dataOut
+
+module mux_forward_main_alu2(
+
     );
-
-    assign dataOut = (control)?rdAddrIn:rtAddrIn;
-
-
 endmodule
-
-`endif

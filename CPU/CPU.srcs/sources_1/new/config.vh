@@ -30,6 +30,15 @@
 `define aluOpSize 1:0
 `define aluControlSize 3:0
 
+`define wbRtAddr 1'b0
+`define wbRdAddr 1'b1
+
+
+`define forwardMuxControlSize 1:0
+`define noForward 2'b00
+`define memForward 2'b01
+`define wbForward 2'b10
+
 `define opPos 31:26
 `define rsPos 25:21
 `define rtPos 20:16

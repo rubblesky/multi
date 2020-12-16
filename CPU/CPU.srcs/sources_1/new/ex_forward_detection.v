@@ -1,14 +1,13 @@
-`ifndef MUX_WB_REG_ADDR_V
-`define MUX_WB_REG_ADDR_V
-
+`ifndef EX_FORWARD_DETECTION_V
+`define EX_FORWARD_DETECTION_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/12/02 16:44:53
+// Create Date: 2020/12/16 11:35:47
 // Design Name: 
-// Module Name: mux_wb_reg_addr
+// Module Name: ex_forward_detection
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -23,15 +22,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `include "config.vh"
-module mux_wb_reg_addr(
-    input control,
-    input[`regAddrSize] rtAddrIn,rdAddrIn,
-    output[`regAddrSize] dataOut
+module ex_forward_detection(
+    
     );
-
-    assign dataOut = (control)?rdAddrIn:rtAddrIn;
-
-
 endmodule
 
 `endif

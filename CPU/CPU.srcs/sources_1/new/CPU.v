@@ -195,6 +195,31 @@ main_alu_control cpu_main_alu_control(
     .aluControl(main_alu_control_aluControl)
 );
 
+//mux_forward_regFile_rs
+wire [`forwardMuxControlSize] mux_forward_regFile_rs_control;
+wire [`SIZE] negativeMemForwardData,negativeWbForwardData;
+wire [`SIZE] mux_forward_regFile_rs_rs;
+mux_forward mux_forward_main_regFile_rs(
+    .control(mux_forward_regFile_rs_control),
+    .noForwardData(reg_file_dataOut1),
+    .memForwardData(negativeMemForwardData),
+    .wbForwardData(negativeWbForwardData),
+
+    .dataOut(mux_forward_regFile_rs_rs)
+);
+
+//mux_forward_regFile_rt
+wire [`forwardMuxControlSize] mux_forward_regFile_rt_control;
+wire [`SIZE] mux_forward_regFile_rt_rt;
+mux_forward mux_forward_main_regFile_rt(
+    .control(mux_forward_regFile_rt_control),
+    .noForwardData(reg_file_dataOut1),
+    .memForwardData(negativeMemForwardData),
+    .wbForwardData(negativeWbForwardData),
+
+    .dataOut(mux_forward_regFile_rt_rt)
+);
+
 //reg_id_ex
 wire[`SIZE] reg_id_ex_rs,reg_id_ex_rt;
 wire[`SIZE] reg_id_ex_inst,reg_id_ex_pc;
@@ -205,8 +230,8 @@ wire [`jmpOpSize] reg_id_ex_jmpOp;
 reg_id_ex cpu_reg_id_ex(
     .clk(clk),
     .rst(rst),
-    .rsIn(reg_file_dataOut1),
-    .rtIn(reg_file_dataOut2),
+    .rsIn(mux_forward_regFile_rs_rs),
+    .rtIn(mux_forward_regFile_rt_rt),
     .instIn(id_tmp_reg_inst),
     .pcIn(id_tmp_reg_pc),
     .extendedImmediateIn(sign_extend_extendedImmediate),
@@ -245,13 +270,38 @@ mux_main_alu_operand cpu_mux_main_alu_operand(
     
 );
 
+//mux_forward_main_alu1
+wire [`forwardMuxControlSize] mux_forward_main_alu1_control;
+wire [`SIZE] positiveMemForwardData,positiveWbForwardData,mux_forward_main_alu1_dataOut;
+mux_forward mux_forward_main_alu1(
+    .control(mux_forward_main_alu1_control),
+    .noForwardData(mux_main_alu_operand_dataOut),
+    .memForwardData(positiveMemForwardData),
+    .wbForwardData(positiveWbForwardData),
+
+    .dataOut(mux_forward_main_alu1_dataOut)
+);
+
+
+//mux_forward_main_alu2
+wire [`forwardMuxControlSize] mux_forward_main_alu2_control;
+wire [`SIZE] mux_forward_main_alu2_dataOut;
+mux_forward mux_forward_main_alu2(
+    .control(mux_forward_main_alu2_control),
+    .noForwardData(mux_main_alu_operand_dataOut),
+    .memForwardData(positiveMemForwardData),
+    .wbForwardData(positiveWbForwardData),
+
+    .dataOut(mux_forward_main_alu2_dataOut)
+);
+
 
 //main_alu
 wire[`SIZE] main_alu_dataOut;
 main_alu cpu_main_alu(
     .clk(clk),
-    .dataIn1(reg_id_ex_rs),
-    .dataIn2(mux_main_alu_operand_dataOut),
+    .dataIn1(mux_forward_main_alu1_dataOut),
+    .dataIn2(mux_forward_main_alu2_dataOut),
     .aluControl(main_alu_control_aluControl),
 
     .dataOut(main_alu_dataOut)
@@ -418,11 +468,74 @@ wire [`regAddrSize]rtAddr,rdAddr;
 wire [`regAddrSize]mux_wb_reg_addr_dataOut;
 mux_wb_reg_addr cpu_mux_wb_reg_addr(
     .control(reg_mem_wb_muxWbRegAddrControl),
-    .dataIn0(rtAddr),
-    .dataIn1(rdAddr),
+    .rtAddrIn(rtAddr),
+    .rdAddrIn(rdAddr),
     .dataOut(mux_wb_reg_addr_dataOut)
 );
 
+//wb_tmp_reg
+wire [`SIZE] wb_tmp_reg_wbData;
+wire [`regAddrSize] wb_tmp_reg_wbRegAddr;
+wire wb_tmp_reg_regFileIsIn;
+wb_tmp_reg cpu_wb_tmp_reg(
+    .clk(clk),
+    .wbDataIn(mux_wb_data_dataOut),
+    .wbRegAddrIn(mux_wb_reg_addr_dataOut),
+
+    .regFileIsInIn(reg_mem_wb_regFileIsIn),
+
+    .wbData(wb_tmp_reg_wbData),
+    .wbRegAddr(wb_tmp_reg_wbRegAddr),
+    
+    .regFileIsIn(wb_tmp_reg_regFileIsIn)
+);
+
+//id_forward_detection
+wire [`forwardMuxControlSize] id_forward_detection_rsMuxControl,id_forward_detection_rtMuxControl;
+forward_detection id_forward_detection(
+    .clk(clk),
+    .rst(rst),
+    .inst(reg_if_id_inst),
+    .memInst(reg_ex_mem_inst),
+    .wbInst(reg_mem_wb_inst),
+    .memIsWb(reg_ex_mem_regFileIsIn),
+    .memWbAddr(reg_ex_mem_muxWbRegAddrControl),
+    .wbIsWb(reg_mem_wb_regFileIsIn),
+    .wbWbAddr(reg_mem_wb_muxWbRegAddrControl),
+
+    .rsMuxControl(id_forward_detection_rsMuxControl),
+    .rtMuxControl(id_forward_detection_rtMuxControl)
+);
+
+//ex_forward_detection
+wire [`forwardMuxControlSize] ex_forward_detection_rsMuxControl,ex_forward_detection_rtMuxControl;
+forward_detection ex_forward_detection(
+    .clk(clk),
+    .rst(rst),
+    .inst(id_tmp_reg_inst),
+    .memInst(ex_tmp_reg_inst),
+    .wbInst(mem_tmp_reg_inst),
+    .memIsWb(ex_tmp_reg_regFileIsIn),
+    .memWbAddr(ex_tmp_reg_muxWbRegAddrControl),
+    .wbIsWb(mem_tmp_reg_regFileIsIn),
+    .wbWbAddr(mem_tmp_reg_muxWbRegAddrControl),
+
+    .rsMuxControl(ex_forward_detection_rsMuxControl),
+    .rtMuxControl(ex_forward_detection_rtMuxControl)
+);
+
+
+
+//连接旁路
+assign positiveMemForwardData = reg_ex_mem_calculation;
+assign positiveWbForwardData = mux_wb_data_dataOut;
+assign negativeMemForwardData = mem_tmp_reg_calculation;
+assign negativeWbForwardData = wb_tmp_reg_wbData;
+//连接旁路控制信号
+assign mux_forward_regFile_rs_control = id_forward_detection_rsMuxControl;
+assign mux_forward_regFile_rt_control = id_forward_detection_rtMuxControl;
+assign mux_forward_main_alu1_control = ex_forward_detection_rsMuxControl;
+assign mux_forward_main_alu2_control = ex_forward_detection_rtMuxControl;
 
 
 //获得pc控制信息
@@ -439,11 +552,10 @@ assign cu_op = reg_if_id_inst[`opPos];
 assign reg_file_addrOut1 = reg_if_id_inst[`rsPos];
 assign reg_file_addrOut2 = reg_if_id_inst[`rtPos];
 //连接reg_file和reg_mem_wb
-assign reg_file_isIn = reg_mem_wb_regFileIsIn;
+assign reg_file_isIn = wb_tmp_reg_regFileIsIn;
 
 //连接sign_extend和reg_if_id
 assign immediate = reg_if_id_inst[`immediatePos];
-
 
 //连接main_alu_control和id_tmp_reg
 assign main_alu_control_funct = id_tmp_reg_inst[`functPos];
@@ -457,10 +569,10 @@ assign rdAddr = reg_mem_wb_inst[`rdPos];
 assign rtAddr = reg_mem_wb_inst[`rtPos];
 
 //连接mux_wb_data和reg_file
-assign reg_file_dataIn = mux_wb_data_dataOut;
+assign reg_file_dataIn = wb_tmp_reg_wbData;
 
 //连接mux_wb_reg_addr和reg_file
-assign reg_file_addrIn = mux_wb_reg_addr_dataOut;
+assign reg_file_addrIn = wb_tmp_reg_wbRegAddr;
 
 //测试用
     //assign tb_pc_isIn = pc_isNotBranch && pc_isNotDataHazard;

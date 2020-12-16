@@ -26,5 +26,8 @@
 `include "reg_mem_wb.v"
 `include "mux_wb_data.v"
 `include "mux_wb_reg_addr.v"
+`include "wb_tmp_reg.v"
 
+`include "forward_detection.v"
+`include "mux_forward.v"
 `endif
