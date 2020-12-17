@@ -55,6 +55,8 @@ end
  wire[`SIZE] tb_mux_main_alu_operand_dataOut;
  //wire [`aluControlSize]tb_main_alu_control_aluControl;
 //wire [`SIZE] tb_main_alu_dataOut;
+wire [`SIZE] tb_jmp_alu_branchjmpPc;
+
  wire[`SIZE] tb_reg_ex_mem_calculation;
 wire[`SIZE] tb_reg_ex_mem_rt;
 //wire [`SIZE] tb_data_mem_dataOut;
@@ -71,6 +73,7 @@ wire [`forwardMuxControlSize] tb_id_forward_detection_rsMuxControl;
 wire [`forwardMuxControlSize] tb_id_forward_detection_rtMuxControl;  
 wire [`forwardMuxControlSize] tb_ex_forward_detection_rsMuxControl;
 wire [`forwardMuxControlSize] tb_ex_forward_detection_rtMuxControl;
+wire [`forwardMuxControlSize] tb_mem_forward_detection_rtMuxControl;
 wire [`SIZE] tb_negativeMemForwardData;
 wire [`SIZE] tb_negativeWbForwardData;
 
@@ -90,6 +93,7 @@ CPU  u_CPU (
     .tb_mux_main_alu_operand_dataOut(tb_mux_main_alu_operand_dataOut),
     //.tb_main_alu_control_aluControl(tb_main_alu_control_aluControl),
     //.tb_main_alu_dataOut(tb_main_alu_dataOut),
+    .tb_jmp_alu_branchJmpPc(tb_jmp_alu_branchjmpPc),
 
     .tb_reg_ex_mem_calculation(tb_reg_ex_mem_calculation),
     .tb_reg_ex_mem_rt(tb_reg_ex_mem_rt),
@@ -108,6 +112,7 @@ CPU  u_CPU (
     .tb_id_forward_detection_rtMuxControl(tb_id_forward_detection_rtMuxControl),
     .tb_ex_forward_detection_rsMuxControl(tb_ex_forward_detection_rsMuxControl),
     .tb_ex_forward_detection_rtMuxControl(tb_ex_forward_detection_rtMuxControl),
+    .tb_mem_forward_detection_rtMuxControl(tb_mem_forward_detection_rtMuxControl),
     .tb_negativeMemForwardData(tb_negativeMemForwardData),
     .tb_negativeWbForwardData(tb_negativeWbForwardData)
 );

@@ -37,7 +37,7 @@ module id_forward_detection(
         end
     end
     
-    always @(posedge clk ) begin
+    always @(posedge clk ) fork
             
         if(memIsWb &&
         (memWbAddr == `wbRtAddr && memInst[`rtPos] == inst[`rsPos] 
@@ -69,13 +69,8 @@ module id_forward_detection(
 
 
 
-    end
-    always @(negedge clk ) begin
-    if(rtMuxControl == 1)begin
-        $display("rtAddr : %d  memRtAddr : %d memRdAddr : %d memOp : %b\n",inst[`rtPos],memInst[`rtPos],memInst[`rdPos],memInst[`opPos]);
-        //$display("rtAddr : %d  memRtAddr : %d memRdAddr : %d memOp : %b\n",inst[`rtPos],memInst[`rtPos],memInst[`rdPos],memInst[`opPos]);
-    end        
-    end
+    join
+
 
 endmodule
 

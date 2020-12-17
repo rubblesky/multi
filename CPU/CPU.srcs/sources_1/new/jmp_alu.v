@@ -30,6 +30,7 @@ module jmp_alu(
     );
     always @(posedge clk ) begin
         jmpPc <= pc + addr;
+        $display("jmp ALU pc : %d addr : %d  jmpPc : %d ",pc,addr,jmpPc);
     end
 
 endmodule

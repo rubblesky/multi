@@ -103,10 +103,14 @@ module status_regs(
             status[31] = status[31] >> 1;
     join
     assign pcIsNotDataHazard = 
-    (inst[`opPos] == 6'b000000 && status[inst[`rsPos]] <= 5'b00010 && status[inst[`rtPos]] <= 5'b00010||
+    /*R型指令和分支指令*/
+    ((inst[`opPos] == 6'b000000 || inst[`opPos] == 6'b000100 || inst[`opPos] == 6'b000101) && status[inst[`rsPos]] <= 5'b00010 && status[inst[`rtPos]] <= 5'b00010||
+    /*取数和立即数运算指令*/
     (inst[`opPos] == 6'b001000 || inst[`opPos] == 6'b100011) && status[inst[`rsPos]] <= 5'b00010 ||
+    /*存数指令*/
     inst[`opPos] == 6'b101011 && status[inst[`rsPos]] <= 5'b00010 && status[inst[`rtPos]] <= 5'b00100 ||
-    inst[`opPos] == 6'b000010 //bne和beq还没写
+    /*跳转指令*/
+    inst[`opPos] == 6'b000010 
     )?`true:`false;
     assign isPause = !pcIsNotDataHazard;
     always @(negedge clk ) begin

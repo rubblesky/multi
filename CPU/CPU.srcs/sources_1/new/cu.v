@@ -52,6 +52,7 @@ module cu(input clk,rst,
         if(isPause) begin
             regFileIsIn <= `false;
             dataMemIsIn <= `false;
+            jmpOp <= 2'b00;
         end
         else if(rst == `true)begin
             

@@ -30,5 +30,6 @@
 
 `include "id_forward_detection.v"
 `include "ex_forward_detection.v"
+`include "mem_forward_detection.v"
 `include "mux_forward.v"
 `endif

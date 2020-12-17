@@ -51,7 +51,12 @@ $display("---------------------------\n pc : %b  isNotDataHazard : %b\n",pc,isNo
         if(rst != `true && isNotBranch == `true && isNotDataHazard == `true)begin
             pc <= newPc;            
         end
-        else if(isNotBranch == `false)begin
+        /*
+        else if(isNotBranch && !isNotDataHazard)begin
+            
+        end
+        */
+        else if(isNotBranch == `false )begin
             isPause <= `true;
         end
     join

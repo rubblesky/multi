@@ -35,6 +35,8 @@ module CPU(
     output wire[`SIZE] tb_mux_main_alu_operand_dataOut,
     output wire[`aluControlSize] tb_main_alu_control_aluControl,
     output wire [`SIZE] tb_main_alu_dataOut,
+
+    output wire [`SIZE] tb_jmp_alu_branchJmpPc,
    //mem
     output wire[`SIZE] tb_reg_ex_mem_calculation,
     output wire[`SIZE] tb_reg_ex_mem_rt,
@@ -55,6 +57,7 @@ module CPU(
     output wire [`forwardMuxControlSize] tb_id_forward_detection_rtMuxControl,   
     output wire [`forwardMuxControlSize] tb_ex_forward_detection_rsMuxControl,
     output wire [`forwardMuxControlSize] tb_ex_forward_detection_rtMuxControl,
+    output wire [`forwardMuxControlSize] tb_mem_forward_detection_rtMuxControl,
 
     output wire [`SIZE] tb_negativeMemForwardData,
     output wire [`SIZE] tb_negativeWbForwardData
@@ -211,7 +214,7 @@ main_alu_control cpu_main_alu_control(
 wire [`forwardMuxControlSize] mux_forward_regFile_rs_control;
 wire [`SIZE] negativeMemForwardData,negativeWbForwardData;
 wire [`SIZE] mux_forward_regFile_rs_rs;
-mux_forward mux_forward_main_regFile_rs(
+mux_forward mux_forward_regFile_rs(
     .control(mux_forward_regFile_rs_control),
     .noForwardData(reg_file_dataOut1),
     .memForwardData(negativeMemForwardData),
@@ -223,7 +226,7 @@ mux_forward mux_forward_main_regFile_rs(
 //mux_forward_regFile_rt
 wire [`forwardMuxControlSize] mux_forward_regFile_rt_control;
 wire [`SIZE] mux_forward_regFile_rt_rt;
-mux_forward mux_forward_main_regFile_rt(
+mux_forward mux_forward_regFile_rt(
     .control(mux_forward_regFile_rt_control),
     .noForwardData(reg_file_dataOut2),
     .memForwardData(negativeMemForwardData),
@@ -325,7 +328,7 @@ jmp_alu cpu_jmp_alu(
     .clk(clk),
     .pc(reg_id_ex_pc),
     .addr(reg_id_ex_extendImmediate),
-    .jmpPc(jmp_alu_branchjmpPc)
+    .jmpPc(jmp_alu_branchJmpPc)
 );
 
 
@@ -370,7 +373,7 @@ pc_select_control cpu_pc_select_control(
 wire [`SIZE] unconditionalJmpPc,mux_jmp_pc_jmpPc;
 mux_jmp_pc cpu_mux_jmp_pc(
     .control(pc_select_control_muxJmpPcControl),
-    .pc0(jmp_alu_branchjmpPc),
+    .pc0(jmp_alu_branchJmpPc),
     .pc1(unconditionalJmpPc),
     .jmpPc(mux_jmp_pc_jmpPc)
 );
@@ -410,6 +413,15 @@ reg_ex_mem cpu_reg_ex_mem(
     .regFileIsIn(reg_ex_mem_regFileIsIn)
 );
 
+//mux_forward_data_mem_rt
+wire [`forwardMuxControlSize] mux_forward_data_mem_rt_control;
+wire [`SIZE] mux_forward_data_mem_rt_dataOut;
+mux_forward mux_forward_data_mem_rt(
+    .control(mux_forward_data_mem_rt_control),
+    .noForwardData(reg_ex_mem_rt),
+    .wbForwardData(positiveWbForwardData),
+    .dataOut(mux_forward_data_mem_rt_dataOut)
+);
 
 //data_mem
 wire[`SIZE] data_mem_dataOut ;
@@ -418,7 +430,7 @@ data_mem cpu_data_mem(
     .isIn(reg_ex_mem_dataMemIsIn),
     .isOut(reg_ex_mem_dataMemIsOut),
     .addr(reg_ex_mem_calculation),
-    .dataIn(reg_ex_mem_rt),
+    .dataIn(mux_forward_data_mem_rt_dataOut),
     .dataOut(data_mem_dataOut)
 );
 
@@ -536,7 +548,18 @@ ex_forward_detection cpu_ex_forward_detection(
     .rtMuxControl(ex_forward_detection_rtMuxControl)
 );
 
+//mem_forward_detection
+wire [`forwardMuxControlSize] mem_forward_detection_rtMuxControl;
+mem_forward_detection cpu_mem_forward_detection(
+    .clk(clk),
+    .rst(rst),
+    .inst(ex_tmp_reg_inst),
+    .wbInst(mem_tmp_reg_inst),
+    .wbIsWb(mem_tmp_reg_regFileIsIn),
+    .wbWbAddr(mem_tmp_reg_muxWbRegAddrControl),
 
+    .rtMuxControl(mem_forward_detection_rtMuxControl)
+);
 
 //连接旁路
 assign positiveMemForwardData = reg_ex_mem_calculation;
@@ -548,7 +571,7 @@ assign mux_forward_regFile_rs_control = id_forward_detection_rsMuxControl;
 assign mux_forward_regFile_rt_control = id_forward_detection_rtMuxControl;
 assign mux_forward_main_alu1_control = ex_forward_detection_rsMuxControl;
 assign mux_forward_main_alu2_control = ex_forward_detection_rtMuxControl;
-
+assign mux_forward_data_mem_rt_control = mem_forward_detection_rtMuxControl;
 
 //获得pc控制信息
 assign pc_isNotBranch = cu_pcIsNotBranch;
@@ -590,7 +613,7 @@ assign reg_file_addrIn = wb_tmp_reg_wbRegAddr;
     //assign tb_pc_isIn = pc_isNotBranch && pc_isNotDataHazard;
     assign tb_pc_isIn = pc_isNotDataHazard;
     always @(posedge clk ) begin
-    $display("tb_pc_isIn : %b pc_isNotDataHazard : %b status_regs_pcIsNotDataHazard : %b\n",tb_pc_isIn,pc_isNotDataHazard,status_regs_pcIsNotDataHazard);
+    
 end
     assign tb_newPc = newPc;
     assign tb_pcOut = pcOut;
@@ -603,6 +626,7 @@ end
     assign tb_mux_main_alu_operand_dataOut = mux_main_alu_operand_dataOut;
     assign tb_main_alu_control_aluControl = main_alu_control_aluControl;
     assign tb_main_alu_dataOut = main_alu_dataOut;
+    assign tb_jmp_alu_branchJmpPc = jmp_alu_branchJmpPc;
 
     assign tb_reg_ex_mem_calculation = reg_ex_mem_calculation;
     assign tb_reg_ex_mem_rt = reg_ex_mem_rt;
@@ -620,6 +644,7 @@ end
     assign tb_id_forward_detection_rsMuxControl = id_forward_detection_rsMuxControl;
     assign tb_ex_forward_detection_rsMuxControl = ex_forward_detection_rsMuxControl;
     assign tb_ex_forward_detection_rtMuxControl = ex_forward_detection_rtMuxControl;
+    assign tb_mem_forward_detection_rtMuxControl = mem_forward_detection_rtMuxControl;
     assign tb_negativeMemForwardData = negativeMemForwardData;
     assign tb_negativeWbForwardData = negativeWbForwardData;
 endmodule
