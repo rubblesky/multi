@@ -35,7 +35,7 @@ module wb_tmp_reg(
     output reg regFileIsIn
     );
 
-    always @(negedge clk ) begin
+    always @(posedge clk ) begin
         wbData <= wbDataIn;
         wbRegAddr <= wbRegAddrIn;
         regFileIsIn <= regFileIsInIn;

@@ -104,12 +104,22 @@ module status_regs(
     join
     assign pcIsNotDataHazard = 
     (inst[`opPos] == 6'b000000 && status[inst[`rsPos]] <= 5'b00010 && status[inst[`rtPos]] <= 5'b00010||
-    inst[`opPos] != 6'b000000
+    (inst[`opPos] == 6'b001000 || inst[`opPos] == 6'b100011) && status[inst[`rsPos]] <= 5'b00010 ||
+    inst[`opPos] == 6'b101011 && status[inst[`rsPos]] <= 5'b00010 && status[inst[`rtPos]] <= 5'b00100 ||
+    inst[`opPos] == 6'b000010 //bne和beq还没写
     )?`true:`false;
     assign isPause = !pcIsNotDataHazard;
     always @(negedge clk ) begin
-        if(pcIsNotDataHazard == `true && inst[`opPos] == 6'b000000)
-            status[inst[`rdPos]] <= 5'b00100 ;
+        if(pcIsNotDataHazard == `true )begin
+           if(inst[`opPos] == 6'b000000)
+                status[inst[`rdPos]] <= 5'b00100;
+            else if(inst[`opPos] == 6'b001000)
+                status[inst[`rtPos]] <= 5'b00100; 
+            else if(inst[`opPos] == 6'b100011)
+                status[inst[`rtPos]] <= 5'b01000;
+            //else if(inst[`opPos] == )
+        end
+        
     end
 
 endmodule

@@ -65,8 +65,14 @@ wire [`regAddrSize]tb_mux_wb_reg_addr_dataOut;
  wire [`SIZE] tb_mux_wb_data_dataOut;
 wire tb_pc_isIn;
 
+wire [`SIZE] tb_mux_forward_main_alu1_dataOut;
+wire [`SIZE] tb_mux_forward_main_alu2_dataOut;
+wire [`forwardMuxControlSize] tb_id_forward_detection_rsMuxControl;
+wire [`forwardMuxControlSize] tb_id_forward_detection_rtMuxControl;  
 wire [`forwardMuxControlSize] tb_ex_forward_detection_rsMuxControl;
 wire [`forwardMuxControlSize] tb_ex_forward_detection_rtMuxControl;
+wire [`SIZE] tb_negativeMemForwardData;
+wire [`SIZE] tb_negativeWbForwardData;
 
 CPU  u_CPU (
     .clk                     ( clk   ),
@@ -96,8 +102,14 @@ CPU  u_CPU (
     .tb_mux_wb_reg_addr_dataOut(tb_mux_wb_reg_addr_dataOut),
     .tb_mux_wb_data_dataOut(tb_mux_wb_data_dataOut),
 
+    .tb_mux_forward_main_alu1_dataOut( tb_mux_forward_main_alu1_dataOut),
+    .tb_mux_forward_main_alu2_dataOut(tb_mux_forward_main_alu2_dataOut),
+    .tb_id_forward_detection_rsMuxControl(tb_id_forward_detection_rsMuxControl),
+    .tb_id_forward_detection_rtMuxControl(tb_id_forward_detection_rtMuxControl),
     .tb_ex_forward_detection_rsMuxControl(tb_ex_forward_detection_rsMuxControl),
-    .tb_ex_forward_detection_rtMuxControl(tb_ex_forward_detection_rtMuxControl)
+    .tb_ex_forward_detection_rtMuxControl(tb_ex_forward_detection_rtMuxControl),
+    .tb_negativeMemForwardData(tb_negativeMemForwardData),
+    .tb_negativeWbForwardData(tb_negativeWbForwardData)
 );
 
 initial

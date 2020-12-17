@@ -48,8 +48,16 @@ module CPU(
     output wire [`SIZE] tb_mux_wb_data_dataOut,
 
     //forward
+    output wire [`SIZE] tb_mux_forward_main_alu1_dataOut,
+    output wire [`SIZE] tb_mux_forward_main_alu2_dataOut,
+
+    output wire [`forwardMuxControlSize] tb_id_forward_detection_rsMuxControl,
+    output wire [`forwardMuxControlSize] tb_id_forward_detection_rtMuxControl,   
     output wire [`forwardMuxControlSize] tb_ex_forward_detection_rsMuxControl,
-    output wire [`forwardMuxControlSize] tb_ex_forward_detection_rtMuxControl
+    output wire [`forwardMuxControlSize] tb_ex_forward_detection_rtMuxControl,
+
+    output wire [`SIZE] tb_negativeMemForwardData,
+    output wire [`SIZE] tb_negativeWbForwardData
     );
 
 
@@ -217,7 +225,7 @@ wire [`forwardMuxControlSize] mux_forward_regFile_rt_control;
 wire [`SIZE] mux_forward_regFile_rt_rt;
 mux_forward mux_forward_main_regFile_rt(
     .control(mux_forward_regFile_rt_control),
-    .noForwardData(reg_file_dataOut1),
+    .noForwardData(reg_file_dataOut2),
     .memForwardData(negativeMemForwardData),
     .wbForwardData(negativeWbForwardData),
 
@@ -262,24 +270,12 @@ reg_id_ex cpu_reg_id_ex(
     .jmpOp(reg_id_ex_jmpOp)
 );
 
-
-
-//mux_main_alu_operand
-wire [`SIZE] mux_main_alu_operand_dataOut;
-mux_main_alu_operand cpu_mux_main_alu_operand(
-    .control(reg_id_ex_muxOperandControl),
-    .dataIn0(reg_id_ex_extendImmediate),
-    .dataIn1(reg_id_ex_rt),
-    .dataOut(mux_main_alu_operand_dataOut)
-    
-);
-
 //mux_forward_main_alu1
 wire [`forwardMuxControlSize] mux_forward_main_alu1_control;
 wire [`SIZE] positiveMemForwardData,positiveWbForwardData,mux_forward_main_alu1_dataOut;
 mux_forward mux_forward_main_alu1(
     .control(mux_forward_main_alu1_control),
-    .noForwardData(mux_main_alu_operand_dataOut),
+    .noForwardData(reg_id_ex_rs),
     .memForwardData(positiveMemForwardData),
     .wbForwardData(positiveWbForwardData),
 
@@ -292,12 +288,24 @@ wire [`forwardMuxControlSize] mux_forward_main_alu2_control;
 wire [`SIZE] mux_forward_main_alu2_dataOut;
 mux_forward mux_forward_main_alu2(
     .control(mux_forward_main_alu2_control),
-    .noForwardData(mux_main_alu_operand_dataOut),
+    .noForwardData(reg_id_ex_rt),
     .memForwardData(positiveMemForwardData),
     .wbForwardData(positiveWbForwardData),
 
     .dataOut(mux_forward_main_alu2_dataOut)
 );
+
+//mux_main_alu_operand
+wire [`SIZE] mux_main_alu_operand_dataOut;
+mux_main_alu_operand cpu_mux_main_alu_operand(
+    .control(reg_id_ex_muxOperandControl),
+    .dataIn0(reg_id_ex_extendImmediate),
+    .dataIn1(mux_forward_main_alu2_dataOut),
+    .dataOut(mux_main_alu_operand_dataOut)
+    
+);
+
+
 
 
 //main_alu
@@ -305,7 +313,7 @@ wire[`SIZE] main_alu_dataOut;
 main_alu cpu_main_alu(
     .clk(clk),
     .dataIn1(mux_forward_main_alu1_dataOut),
-    .dataIn2(mux_forward_main_alu2_dataOut),
+    .dataIn2(mux_main_alu_operand_dataOut),
     .aluControl(main_alu_control_aluControl),
 
     .dataOut(main_alu_dataOut)
@@ -461,8 +469,8 @@ reg_mem_wb cpu_reg_mem_wb(
 wire [`SIZE] mux_wb_data_dataOut;
 mux_wb_data cpu_mux_wb_data(
     .control(reg_mem_wb_muxWbDataControl),
-    .dataIn0(reg_mem_wb_loadedData),
-    .dataIn1(reg_mem_wb_calculation),
+    .load(reg_mem_wb_loadedData),
+    .calculation(reg_mem_wb_calculation),
     .dataOut(mux_wb_data_dataOut)
 );
 
@@ -533,7 +541,7 @@ ex_forward_detection cpu_ex_forward_detection(
 //连接旁路
 assign positiveMemForwardData = reg_ex_mem_calculation;
 assign positiveWbForwardData = mux_wb_data_dataOut;
-assign negativeMemForwardData = mem_tmp_reg_calculation;
+assign negativeMemForwardData = (mem_tmp_reg_muxWbDataControl == `wbCalculationData) ? mem_tmp_reg_calculation : data_mem_dataOut;
 assign negativeWbForwardData = wb_tmp_reg_wbData;
 //连接旁路控制信号
 assign mux_forward_regFile_rs_control = id_forward_detection_rsMuxControl;
@@ -555,7 +563,7 @@ assign cu_op = reg_if_id_inst[`opPos];
 //连接reg_file和reg_if_id
 assign reg_file_addrOut1 = reg_if_id_inst[`rsPos];
 assign reg_file_addrOut2 = reg_if_id_inst[`rtPos];
-//连接reg_file和reg_mem_wb
+//连接reg_file和wb_tmp_reg
 assign reg_file_isIn = wb_tmp_reg_regFileIsIn;
 
 //连接sign_extend和reg_if_id
@@ -606,7 +614,13 @@ end
     assign tb_mux_wb_reg_addr_dataOut = mux_wb_reg_addr_dataOut;
     assign tb_mux_wb_data_dataOut = mux_wb_data_dataOut;
 
+    assign tb_mux_forward_main_alu1_dataOut = mux_forward_main_alu1_dataOut;
+    assign tb_mux_forward_main_alu2_dataOut = mux_forward_main_alu2_dataOut;
+    assign tb_id_forward_detection_rtMuxControl = id_forward_detection_rtMuxControl;
+    assign tb_id_forward_detection_rsMuxControl = id_forward_detection_rsMuxControl;
     assign tb_ex_forward_detection_rsMuxControl = ex_forward_detection_rsMuxControl;
     assign tb_ex_forward_detection_rtMuxControl = ex_forward_detection_rtMuxControl;
+    assign tb_negativeMemForwardData = negativeMemForwardData;
+    assign tb_negativeWbForwardData = negativeWbForwardData;
 endmodule
 

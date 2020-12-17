@@ -41,7 +41,7 @@ initial
 begin
     file[0] = 0;
     for(i = 1;i <32 ;i=i+1)
-        file[i] = 1;  
+        file[i] = 0;  
 
 end
 
@@ -49,10 +49,18 @@ end
     always @(posedge clk) fork  
         dataOut1 <= file[addrOut1];
         dataOut2 <= file[addrOut2];
+
+            
+        $display( "file[0] : %d   file[5] : %d \n",file[0],file[5]);
+    join
+
+    always @(negedge clk ) begin
         if(isIn == `true)begin
             file[addrIn] <= dataIn;
-        end   
-    join
+        end  
+        //$display("regFile rsAddr : %d rs : %d rtAddr : %d rt : %d\n",addrOut1,dataOut1,addrOut2,dataOut2); 
+        $display("WriteBack : addrIn:%d  dataIn : %d\n",addrIn,dataIn);
+    end
 
 endmodule
 

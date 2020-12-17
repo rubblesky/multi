@@ -41,5 +41,8 @@ always @(negedge clk ) begin
 
 end
     
+always @(posedge clk ) begin
+    $display("rsAddr : %d  rs : %d    rtAddr : %d rt : %d",inst[`rsPos],rs,inst[`rtPos],rt);
+end
 endmodule
 `endif

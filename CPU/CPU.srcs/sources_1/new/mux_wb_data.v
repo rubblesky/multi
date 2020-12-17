@@ -24,10 +24,10 @@
 `include "config.vh"
 module mux_wb_data(
     input control,
-    input[`SIZE] dataIn0,dataIn1,
+    input[`SIZE] calculation,load,
     output[`SIZE] dataOut   
     );
-    assign dataOut = (control)?dataIn1:dataIn0;
+    assign dataOut = (control)?calculation:load;
 
 endmodule
 `endif

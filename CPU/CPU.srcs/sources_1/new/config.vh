@@ -32,7 +32,8 @@
 
 `define wbRtAddr 1'b0
 `define wbRdAddr 1'b1
-
+`define wbCalculationData 1'b1
+`define wbLoadData 1'b0
 
 `define forwardMuxControlSize 1:0
 `define noForward 2'b00

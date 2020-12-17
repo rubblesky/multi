@@ -69,7 +69,7 @@ module cu(input clk,rst,
                     muxOperandControl <= 1'b1;
                     dataMemIsIn <= `false;
                     dataMemIsOut <= `false;
-                    muxWbDataControl <= 1'b1;
+                    muxWbDataControl <= `wbCalculationData;
                     muxWbRegAddrControl <= `wbRdAddr;
                     jmpOp <= 2'b00;
                 end
@@ -82,7 +82,7 @@ module cu(input clk,rst,
                     muxOperandControl <= 1'b0;
                     dataMemIsIn <= `false;
                     dataMemIsOut <= `true;
-                    muxWbDataControl <= 1'b0;
+                    muxWbDataControl <= `wbLoadData;
                     muxWbRegAddrControl <= `wbRtAddr;
                     jmpOp <= 2'b00;
                 end
@@ -106,7 +106,7 @@ module cu(input clk,rst,
                     muxOperandControl <= 1'b0;
                     dataMemIsIn <= `false;
                     dataMemIsOut <= `false;
-                    muxWbDataControl <= 1'b1;
+                    muxWbDataControl <= `wbCalculationData;
                     muxWbRegAddrControl <= `wbRtAddr;    
                     jmpOp <= 2'b00;           
                 end
