@@ -30,13 +30,18 @@ module ex_forward_detection(
     output reg[`forwardMuxControlSize] rsMuxControl,rtMuxControl
     );
 
+initial begin
+    rsMuxControl <= `noForward;
+    rtMuxControl <= `noForward;
+end
+/*
     always @(posedge clk) begin
         if(rst == `true)begin
             rsMuxControl <= `noForward;
             rtMuxControl <= `noForward;
         end
     end
-    
+*/  
     always @(negedge clk ) begin
         if(memIsWb &&
         (memWbAddr == `wbRtAddr && memInst[`rtPos] == inst[`rsPos] 

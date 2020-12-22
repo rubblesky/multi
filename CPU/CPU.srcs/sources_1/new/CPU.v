@@ -100,6 +100,7 @@ pause_control cpu_pause_control(
 
 wire[`SIZE] instruction;
 inst_mem cpu_inst_mem(
+    .rst(rst),
     .clk(clk),
     .address(pcOut),
     .isOut(`true),  //需要控制指令流出时再修改

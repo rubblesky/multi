@@ -25,11 +25,17 @@ module reg_id_ex(
 
 reg[`regAddrSize] rdAddr;
 
+initial begin
+    jmpOp <= 2'b00;
+end
+/*
 always @(posedge clk ) begin
     if(rst == `true)
         jmpOp <= 2'b00;
 end
+*/
 always @(negedge clk ) begin
+    
     rs <= rsIn;
     rt <= rtIn;
     pc <= pcIn;
@@ -41,8 +47,6 @@ always @(negedge clk ) begin
 
 end
     
-always @(posedge clk ) begin
-    $display("rsAddr : %d  rs : %d    rtAddr : %d rt : %d",inst[`rsPos],rs,inst[`rtPos],rt);
-end
+
 endmodule
 `endif

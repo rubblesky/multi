@@ -23,15 +23,17 @@
 
 `include "config.vh"
 
-module inst_mem(input wire clk,
+module inst_mem(
+                input wire rst,
+                input wire clk,
                 input wire[`SIZE] address,
                 input wire isOut,
                 output reg[`SIZE] instruction);
     reg[`SIZE] memory[`instMemSize];	
-    initial 
+    initial
     begin
-        
-    $readmemb ("E:/myfile/homework/ComputerArchitecture/CPU/CPU/CPU.srcs/sources_1/new/inst.data",memory);
+        //memory[0] <= 32'b00100000000001000000000000000010;
+        $readmemb ("E:/myfile/homework/ComputerArchitecture/CPU/CPU/CPU.srcs/sources_1/new/inst.data",memory,0,1023);
 
     end
     always	@(posedge clk) fork

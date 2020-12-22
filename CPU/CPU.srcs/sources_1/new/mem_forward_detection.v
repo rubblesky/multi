@@ -1,5 +1,5 @@
 `ifndef MEM_FORWARD_DETECTION_V
-`define MEM_FOREARD_DETECTION_V
+`define MEM_FORWARD_DETECTION_V
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
@@ -29,12 +29,17 @@ module mem_forward_detection(
     input wbIsWb,wbWbAddr,
     output reg[`forwardMuxControlSize] rtMuxControl
     );
-
+initial begin
+    rtMuxControl <= `noForward;
+end
+/*
     always @(posedge clk) begin
         if(rst == `true)begin
             rtMuxControl <= `noForward;
         end
     end
+*/
+
 
 
     always @(negedge clk ) begin

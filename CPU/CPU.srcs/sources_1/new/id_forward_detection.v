@@ -30,15 +30,14 @@ module id_forward_detection(
     output reg[`forwardMuxControlSize] rsMuxControl,rtMuxControl
     );
 
-    always @(posedge clk) begin
+
+    
+    always @(posedge clk ) fork
         if(rst == `true)begin
             rsMuxControl <= `noForward;
             rtMuxControl <= `noForward;
-        end
-    end
-    
-    always @(posedge clk ) fork
-            
+        end    
+
         if(memIsWb &&
         (memWbAddr == `wbRtAddr && memInst[`rtPos] == inst[`rsPos] 
         || memWbAddr == `wbRdAddr && memInst[`rdPos] == inst[`rsPos]))begin

@@ -33,20 +33,20 @@ module cu(input clk,rst,
           output reg regFileIsIn,pcIsNotBranch,
           output reg[`jmpOpSize] jmpOp
           );
-/*
+
     initial begin
         pcIsNotBranch <= `true;
         jmpOp <= 2'b00;
     end
-*/
 
+/*
         always @(posedge clk ) begin
             if(rst == `true)begin
                 pcIsNotBranch <= `true;
                 jmpOp <= 2'b00;               
             end
         end
-
+*/
     always @(posedge clk) begin
         //aluOp <= 2'b10;
         if(isPause) begin

@@ -30,13 +30,10 @@ module pc_alu(
 
 
 
-always @(posedge clk ) begin
-    if(rst == `true)
-        nextPc <= 32'h00000000;
-
-end
 
     always @(posedge clk) fork
+        if(rst == `true)
+            nextPc <= 32'h00000000;
         nextPc <= pc + 1; 
         //由于inst_mem的定义 这里加一
     join

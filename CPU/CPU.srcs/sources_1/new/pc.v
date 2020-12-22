@@ -28,38 +28,31 @@
     input isNotBranch,isNotDataHazard,
     input[`SIZE] newPc,
     output[`SIZE] pcOut,
-    output reg isPause
+    output wire isPause
     );
 
     reg[`SIZE] pc;
+    reg pause1,pause2;
 
-always @(posedge clk ) begin
-    if(rst == `true)
+    initial begin
+        pause1 <= `false;
+        pause2 <= `false;
         pc <= 32'h00000000;
-        isPause <= `false;
-end
-
+    end
     always @(posedge clk ) begin
-        if(rst == `true)begin
-            pc <= 32'h00000000;
-            isPause <= `false;
-        end
-$display("---------------------------\n pc : %b  isNotDataHazard : %b\n",pc,isNotDataHazard);
+        pause1 <= `false ^ pause1;
     end
 
-    always @(negedge clk) fork
+    always @(negedge clk) begin
+        
         if(rst != `true && isNotBranch == `true && isNotDataHazard == `true)begin
             pc <= newPc;            
         end
-        /*
-        else if(isNotBranch && !isNotDataHazard)begin
-            
-        end
-        */
         else if(isNotBranch == `false )begin
-            isPause <= `true;
+            pause2 <= `true ^ pause2;
         end
-    join
+    end
+    assign isPause = (rst)?`false:pause1^pause2;
     assign pcOut = (rst)?32'bz:pc; 
 endmodule
 `endif
